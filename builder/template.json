@@ -7,7 +7,7 @@
 
     "builders": [
         {
-          "name": "cicd-ubuntu-20.04-live-server",
+          "name": "cicd-ubuntu-20.04",
           "type": "virtualbox-iso",
 
           "guest_os_type": "Ubuntu_64",
