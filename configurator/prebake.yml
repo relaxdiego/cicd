@@ -1,0 +1,9 @@
+---
+
+- name: Test Playbook
+  gather_facts: false
+  hosts: all
+  tasks:
+
+    - debug:
+        msg: "TODO: Create a real prebaking playbook."
