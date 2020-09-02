@@ -1,0 +1,64 @@
+{
+    "variables": {
+        "output_directory": "output"
+    },
+
+    "builders": [
+        {
+          "name": "cicd-ubuntu-20.04-live-server",
+          "type": "virtualbox-iso",
+
+          "guest_os_type": "Ubuntu_64",
+          "memory": 4096,
+          "headless": false,
+
+          "iso_urls": [
+            ".tmp/iso/ubuntu-20.04-live-server-amd64.iso",
+            "http://cdimage.ubuntu.com/ubuntu/releases/20.04/release/ubuntu-20.04-live-server-arm64.iso"
+          ],
+          "iso_checksum": "sha256:caf3fd69c77c439f162e2ba6040e9c320c4ff0d69aad1340a514319a9264df9f",
+
+          "http_directory": "builder/ubuntu/subiquity/http",
+          "output_directory": "{{user `output_directory`}}/",
+
+          "boot_wait": "5s",
+          "boot_command": [
+            "<enter><enter><f6><esc><wait> ",
+            "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter><wait>"
+          ],
+
+          "shutdown_command": "sudo -S shutdown -P now",
+
+          "ssh_username": "ubuntu",
+          "ssh_password": "ubuntu",
+          "ssh_pty": true,
+          "ssh_timeout": "20m",
+          "ssh_handshake_attempts": "20"
+        }
+    ],
+
+    "provisioners": [
+        {
+            "inline": [
+                "ls /"
+            ],
+            "type": "shell"
+        },
+        {
+            "type": "shell",
+            "inline":[
+                "sudo rm -rf /home/*/.ssh",
+                "sudo rm -f /etc/ssh/ssh_host_*"
+            ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "compression_level": 1,
+            "output": "{{user `output_directory`}}/{{.BuildName}}.box",
+            "keep_input_artifact": true
+        }
+    ]
+}
