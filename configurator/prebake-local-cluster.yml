@@ -1,0 +1,8 @@
+---
+- name: Local Cluster Prebake
+  gather_facts: false
+  hosts: all
+  become: true
+  tasks:
+    - debug:
+        msg: "TODO: Run prebake-common playbook here"

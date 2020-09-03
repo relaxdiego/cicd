@@ -1,4 +1,6 @@
 {
+    "_comment": "See builder/README.md for notes",
+
     "variables": {
         "output_directory": ".tmp/output",
         "ssh_username": "ubuntu",
@@ -7,16 +9,20 @@
 
     "builders": [
         {
-          "name": "cicd-ubuntu-20.04",
+          "name": "local-cluster",
           "type": "virtualbox-iso",
 
           "guest_os_type": "Ubuntu_64",
-          "memory": 4096,
+          "cpus": 2,
+          "memory": 6144,
           "headless": true,
+          "guest_additions_mode": "disable",
+          "vboxmanage": [
+              ["modifyvm", "{{.Name}}", "--vram", "128"]
+          ],
 
           "iso_urls": [
-            ".tmp/iso/ubuntu-20.04-live-server-amd64.iso",
-            "http://cdimage.ubuntu.com/ubuntu/releases/20.04/release/ubuntu-20.04-live-server-arm64.iso"
+            ".tmp/iso/ubuntu-20.04-live-server-amd64.iso"
           ],
           "iso_checksum": "sha256:caf3fd69c77c439f162e2ba6040e9c320c4ff0d69aad1340a514319a9264df9f",
 
@@ -43,12 +49,28 @@
     "provisioners": [
         {
             "type": "ansible",
+            "pause_before": "10s",
+            "only": [
+                "local-cluster"
+            ],
             "user": "{{user `ssh_username`}}",
-            "playbook_file": "configurator/prebake.yml",
+            "playbook_file": "configurator/prebake-local-cluster.yml",
             "extra_arguments": [
                 "--connection=ssh",
                 "--extra-vars",
                     "ansible_ssh_pass={{user `ssh_password`}}"
+            ],
+            "ansible_env_vars": [
+                "ANSIBLE_SCP_IF_SSH=True"
+            ]
+        },
+        {
+            "type": "shell",
+            "only": [
+                "local-cluster"
+            ],
+            "inline":[
+                "sudo sed -rie 's/^#? *(PasswordAuthentication)([[:space:]]+)no/\\1\\2yes/' /etc/ssh/sshd_config"
             ]
         },
         {
@@ -62,6 +84,9 @@
     "post-processors": [
         {
             "type": "vagrant",
+            "only": [
+                "local-cluster"
+            ],
             "compression_level": 1,
             "output": "{{user `output_directory`}}/{{.BuildName}}.box",
             "keep_input_artifact": true
