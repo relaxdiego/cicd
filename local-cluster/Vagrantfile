@@ -12,6 +12,8 @@ Vagrant.configure(2) do |config|
   config.ssh.insert_key = false
   config.vm.box = 'local-cluster'
   config.vm.box_url = 'file://../.tmp/output/local-cluster.box'
+  # We don't need this and it certainly doesn't work
+  config.vm.synced_folder '.', '/vagrant', disabled: true
 
   #
   # GitLab
