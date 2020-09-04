@@ -10,3 +10,5 @@
 Try restarting the VirtualBox server:
 
     sudo /Library/Application\ Support/VirtualBox/LaunchDaemons/VirtualBoxStartup.sh restart
+
+VirtualBox is buggy. Maybe check out VMWare in the future.

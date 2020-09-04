@@ -1,0 +1,14 @@
+---
+# Ensure that the server will generate host keys in /etc/ssh/ on first
+# boot thereby generating a unique identity for this machine.
+- name: ssh-keygen unit file
+  copy:
+    src: ssh-keygen.service
+    dest: /etc/systemd/system/
+    mode: 0644
+
+- name: Enable ssh-keygen service
+  systemd:
+    name: ssh-keygen
+    enabled: yes
+    daemon_reload: yes
