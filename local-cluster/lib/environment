@@ -1,0 +1,3 @@
+#!/usr/bin/env bash -e
+export local_gitlab_ip='192.168.246.10'
+export local_runner_ip='192.168.246.11'

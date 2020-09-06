@@ -7,6 +7,25 @@
 .PHONY: box
 box : .tmp/output/local-cluster.box
 
+##   cluster               : Instantiates a cluster defined in the path pointed to
+##                           by the configdir argument. Example:
+##
+##                              make cluster configdir=/path/to/config/dir
+##
+##                           The path may be absolute or relative to the Makefile.
+##                           If you want to configure your local cluster, there's a
+##                           convenience goal that you can call instead: `make local-cluster`.
+##
+##                           Note that, unlike its local-cluster counterpart, this goal does
+##                           not check if the cluster has already been instantiated or not since
+##                           it has no way of knowing what tool will be used for the instantiation
+##                           mechanism. Thus, that responsibility is delegated to
+##                           ${configdir}/hooks/instantiate-cluster.
+##
+.PHONY: cluster
+cluster :
+	@configdir=${configdir} scripts/instantiate-cluster
+
 ##   gitlab                : Configures a cluster defined by the configdir argument.
 ##                           Example:
 ##
@@ -25,7 +44,7 @@ gitlab :
 .PHONY: local-cluster
 local-cluster : box .make-flag-local-cluster-created
 .make-flag-local-cluster-created :
-	@cd local-cluster && vagrant up
+	@configdir=local-cluster/ scripts/instantiate-cluster
 	touch .make-flag-local-cluster-created
 
 ##   local-cluster-implode : Destroys the local cluster

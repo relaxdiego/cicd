@@ -1,4 +1,4 @@
 #!/usr/bin/env bash -e
 cd $configdir
 source lib/environment
-echo -n "${local_gitlab_ip},${local_runner_ip}"
+vagrant up

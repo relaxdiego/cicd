@@ -1,16 +1,24 @@
 #!/usr/bin/env bash -e
 
-[ -z "$configdir" ] && echo "ERROR: configdir was not provided" && exit 1
-[ ! -d "$configdir" ] && echo "ERROR: $configdir does not exist" && exit 1
+[ -z "$configdir" ] && \
+    echo "ERROR: configdir was not provided" && \
+    exit 1
+
+[ ! -d "$configdir" ] && \
+    echo "ERROR: $configdir does not exist" && \
+    exit 1
 
 configdir="$(scripts/get_abspath $configdir)"
 echo "Cluster configdir is at ${configdir}"
 
-get_inventory_script=${configdir}/hooks/get-inventory
-echo "Looking for inventory script at ${get_inventory_script}"
-[ ! -x "${get_inventory_script}" ] && \
-    echo "ERROR: ${get_inventory_script} does not exist" && exit 1
-inventory=$($get_inventory_script)
+get_inventory_hook=${configdir}/hooks/get-inventory
+echo "Looking for inventory script at ${get_inventory_hook}"
+[ ! -x "${get_inventory_hook}" ] && \
+    echo "ERROR: ${get_inventory_hook} does not exist" && \
+    exit 1
+# NOTE: The hook may return a comma-delimited string of hostnames/IPs
+#       OR a path to an inventory file. Ansible accepts either.
+inventory=$($get_inventory_hook)
 
 cd configurator
 set -x

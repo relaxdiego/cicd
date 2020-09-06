@@ -19,7 +19,7 @@ Vagrant.configure(2) do |config|
   # GitLab
   #
   config.vm.define 'gitlab' do |gitlab|
-    gitlab.vm.network 'private_network', ip: '192.168.246.10'
+    gitlab.vm.network 'private_network', ip: ENV['local_gitlab_ip']
 
     gitlab.vm.provider :virtualbox do |vbox|
       vbox.gui    = false
@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
   # GitLab Runner
   #
   config.vm.define 'runner' do |runner|
-    runner.vm.network 'private_network', ip: '192.168.246.11'
+    runner.vm.network 'private_network', ip: ENV['local_runner_ip']
 
     runner.vm.provider :virtualbox do |vbox|
       vbox.gui    = false
