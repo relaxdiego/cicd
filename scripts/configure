@@ -1,0 +1,24 @@
+#!/usr/bin/env bash -e
+
+[ -z "$configdir" ] && echo "ERROR: configdir was not provided" && exit 1
+[ ! -d "$configdir" ] && echo "ERROR: $configdir does not exist" && exit 1
+
+configdir="$(scripts/get_abspath $configdir)"
+echo "Cluster configdir is at ${configdir}"
+
+get_inventory_script=${configdir}/hooks/get-inventory
+echo "Looking for inventory script at ${get_inventory_script}"
+[ ! -x "${get_inventory_script}" ] && \
+    echo "ERROR: ${get_inventory_script} does not exist" && exit 1
+inventory=$($get_inventory_script)
+
+cd configurator
+set -x
+
+ansible-playbook --inventory ${inventory} \
+    gitlab.yml
+
+{ set +x; } 2>/dev/null
+cd - >/dev/null
+
+exit 0

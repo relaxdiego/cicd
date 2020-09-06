@@ -1,0 +1,9 @@
+---
+- name: Configure GitLab
+  gather_facts: false
+  hosts: all
+  become: true
+
+  tasks:
+    - debug:
+        msg: "Test"
