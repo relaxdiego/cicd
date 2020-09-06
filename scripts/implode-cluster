@@ -1,0 +1,25 @@
+#!/usr/bin/env bash -e
+
+[ -z "$configdir" ] && \
+    echo "ERROR: configdir was not provided" && \
+    exit 1
+
+[ ! -d "$configdir" ] && \
+    echo "ERROR: $configdir does not exist" && \
+    exit 1
+
+configdir="$(scripts/get_abspath $configdir)"
+echo "Cluster configdir is at ${configdir}"
+
+hook=${configdir}/hooks/implode-cluster
+echo "Looking for implode hook at ${hook}"
+
+[ ! -e "${hook}" ] && \
+    echo "Hook does not exist. Skipping." && \
+    exit 0
+
+[ ! -x "${hook}" ] && \
+    echo "ERROR: Hook exists but is not executable." && \
+    exit 1
+
+$hook

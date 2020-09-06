@@ -26,6 +26,21 @@ box : .tmp/output/local-cluster.box
 cluster :
 	@configdir=${configdir} scripts/instantiate-cluster
 
+##   cluster-implode       : Destroys the cluster defined in the path pointed to by the
+##                           configdir argument. Example:
+##
+##                              make cluster-implode configdir=/path/to/config/dir
+##
+##                           The path may be absolute or relative to the Makefile.
+##                           If you want to configure your local cluster, there's a
+##                           convenience goal that you can call instead:
+##                           `make local-cluster-implode`.
+##
+##
+.PHONY: cluster-implode
+cluster-implode :
+	@configdir=${configdir} scripts/implode-cluster
+
 ##   gitlab                : Configures a cluster defined by the configdir argument.
 ##                           Example:
 ##
@@ -51,7 +66,7 @@ local-cluster : box .make-flag-local-cluster-created
 ##
 .PHONY: local-cluster-implode
 local-cluster-implode :
-	@cd local-cluster && vagrant destroy -f
+	@configdir=local-cluster/ scripts/implode-cluster
 	rm -vf .make-flag-local-cluster-created
 
 ##   local-gitlab          : Configures the local cluster to run GitLab. Same as running

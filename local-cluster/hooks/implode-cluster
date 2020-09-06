@@ -1,0 +1,4 @@
+#!/usr/bin/env bash -e
+cd $configdir
+source lib/environment
+vagrant destroy -f
