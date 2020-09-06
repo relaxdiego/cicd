@@ -2,3 +2,6 @@
 cd $configdir
 source lib/environment
 vagrant destroy -f
+
+echo "Removing ~/.ssh/config custom entries"
+sed -i "/$local_cluster_ssh_config_marker_start/,/$local_cluster_ssh_config_marker_end/ d" ~/.ssh/config

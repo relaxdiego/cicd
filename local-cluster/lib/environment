@@ -1,3 +1,6 @@
 #!/usr/bin/env bash -e
 export local_gitlab_ip='192.168.246.10'
 export local_runner_ip='192.168.246.11'
+
+export local_cluster_ssh_config_marker_start="=== CICD_LOCAL_CLUSTER_SSH_CONFIG_BEGIN ==="
+export local_cluster_ssh_config_marker_end="=== CICD_LOCAL_CLUSTER_SSH_CONFIG_END ==="

@@ -2,3 +2,16 @@
 cd $configdir
 source lib/environment
 vagrant up
+
+#
+# Add local cluster machines to user's ~/.ssh/config file
+# so that the configurator won't have to treat it as a
+# special case.
+#
+touch ~/.ssh/config
+# Ensure that we start in a new line
+([ -s ~/.ssh/config ] && [ -z "$(tail -c 1 ~/.ssh/config)" ]) || \
+    echo >> ~/.ssh/config
+echo "$local_cluster_ssh_config_marker_start" >> ~/.ssh/config
+vagrant ssh-config >> ~/.ssh/config
+echo "$local_cluster_ssh_config_marker_end" >> ~/.ssh/config
