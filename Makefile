@@ -20,19 +20,19 @@ box : .tmp/output/local-cluster.box
 gitlab :
 	@configdir=$(configdir) scripts/configure
 
-##   local-cluster         : Instantiates the local dev cluster for development purposes
+##   local-cluster         : Instantiates a local cluster for development purposes
 ##
 .PHONY: local-cluster
 local-cluster : box
 	@cd local-cluster && vagrant up
 
-##   local-cluster-implode : Destroys the local dev cluster
+##   local-cluster-implode : Destroys the local cluster
 ##
 .PHONY: local-cluster-implode
 local-cluster-implode :
 	@cd local-cluster && vagrant destroy -f
 
-##   local-gitlab          : Configures local-cluster to run GitLab. Same as running
+##   local-gitlab          : Configures the local cluster to run GitLab. Same as running
 ##                           `make gitlab configdir=./local-cluster`
 ##
 .PHONY: local-gitlab
