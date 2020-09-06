@@ -36,7 +36,6 @@ cluster :
 ##                           convenience goal that you can call instead:
 ##                           `make local-cluster-implode`.
 ##
-##
 .PHONY: cluster-implode
 cluster-implode :
 	@configdir=${configdir} scripts/implode-cluster
