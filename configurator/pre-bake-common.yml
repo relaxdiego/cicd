@@ -5,9 +5,10 @@
 # configurator/pre-bake-local-cluster.yml instead.
 
 - name: Common Image Pre-baking Tasks
-  gather_facts: false
+  gather_facts: true
   hosts: all
   become: true
 
   roles:
     - pre-bake/ssh
+    - pre-bake/gitlab-dependencies

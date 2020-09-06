@@ -1,0 +1,7 @@
+---
+- name: Install GitLab EE
+  apt:
+    pkg:
+      - gitlab-ee
+    update_cache: yes
+

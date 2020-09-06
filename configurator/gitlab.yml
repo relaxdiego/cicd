@@ -9,10 +9,9 @@
 - import_playbook: pre-bake-common.yml
 
 - name: Configure GitLab
-  gather_facts: false
-  hosts: all
+  gather_facts: true
+  hosts: gitlab_hosts
   become: true
 
-  tasks:
-    - debug:
-        msg: "Test"
+  # roles:
+  #   - gitlab-ee

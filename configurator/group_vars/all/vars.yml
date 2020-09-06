@@ -1,0 +1,4 @@
+---
+tmp_dir: "{{ ansible_env.HOME }}/.cicd"
+
+gitlab_package_repo_adder: "{{ tmp_dir }}/add-package-repo.sh"

@@ -24,7 +24,7 @@ Vagrant.configure(2) do |config|
     gitlab.vm.provider :virtualbox do |vbox|
       vbox.gui    = false
       vbox.cpus   = 2
-      vbox.memory = 2048
+      vbox.memory = 4096
     end
   end
 
@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
     runner.vm.provider :virtualbox do |vbox|
       vbox.gui    = false
       vbox.cpus   = 2
-      vbox.memory = 2048
+      vbox.memory = 4096
     end
   end
 end
