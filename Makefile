@@ -23,20 +23,23 @@ gitlab :
 ##   local-cluster         : Instantiates a local cluster for development purposes
 ##
 .PHONY: local-cluster
-local-cluster : box
+local-cluster : box .make-flag-local-cluster-created
+.make-flag-local-cluster-created :
 	@cd local-cluster && vagrant up
+	touch .make-flag-local-cluster-created
 
 ##   local-cluster-implode : Destroys the local cluster
 ##
 .PHONY: local-cluster-implode
 local-cluster-implode :
 	@cd local-cluster && vagrant destroy -f
+	rm -vf .make-flag-local-cluster-created
 
 ##   local-gitlab          : Configures the local cluster to run GitLab. Same as running
 ##                           `make gitlab configdir=./local-cluster`
 ##
 .PHONY: local-gitlab
-local-gitlab :
+local-gitlab : local-cluster
 	@configdir=./local-cluster scripts/configure
 
 ##   help                  : Print this help message

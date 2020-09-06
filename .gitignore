@@ -1,3 +1,4 @@
+.make-flag*
 .tmp
 local-cluster/.vagrant
 local-cluster/*.log
