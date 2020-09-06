@@ -1,0 +1,16 @@
+---
+# This playbook is used to pre-bake images created by the local-cluster
+# builder in builder/template.json. If you want to add pre-baking tasks
+# that should apply to all builders, please add those to
+# configurator/pre-bake-common.yml instead.
+
+- import_playbook: pre-bake-common.yml
+
+- name: Local Cluster Image Pre-baking Tasks
+  gather_facts: false
+  hosts: all
+  become: true
+
+  tasks:
+    - debug:
+        msg: Add tasks or roles here that are specific to the local cluster

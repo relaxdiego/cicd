@@ -1,4 +1,13 @@
 ---
+# This playbook is used to configure the cluster with GiLab. It also
+# calls the pre-bake-common.yml playbook to ensure that if anything was
+# added to pre-bake-common.yml after the image has been built that they
+# will also be added to the machine(s). If nothing was added to that
+# playbook since the image was created, then it would be a noop and
+# everything will continue as expected.
+
+- import_playbook: pre-bake-common.yml
+
 - name: Configure GitLab
   gather_facts: false
   hosts: all

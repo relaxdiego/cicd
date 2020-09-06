@@ -49,12 +49,28 @@
     "provisioners": [
         {
             "type": "ansible",
+            "except": [
+                "local-cluster"
+            ],
             "pause_before": "10s",
+            "user": "{{user `ssh_username`}}",
+            "playbook_file": "configurator/pre-bake-common.yml",
+            "extra_arguments": [
+                "--connection=ssh",
+                "--extra-vars", "ansible_ssh_pass={{user `ssh_password`}}",
+                "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"
+            ],
+            "ansible_env_vars": [
+                "ANSIBLE_SCP_IF_SSH=True"
+            ]
+        },
+        {
+            "type": "ansible",
             "only": [
                 "local-cluster"
             ],
             "user": "{{user `ssh_username`}}",
-            "playbook_file": "configurator/prebake-local-cluster.yml",
+            "playbook_file": "configurator/pre-bake-local-cluster.yml",
             "extra_arguments": [
                 "--connection=ssh",
                 "--extra-vars", "ansible_ssh_pass={{user `ssh_password`}}",

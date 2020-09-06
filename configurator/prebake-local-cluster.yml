@@ -1,8 +1,0 @@
----
-- name: Local Cluster Prebake
-  gather_facts: false
-  hosts: all
-  become: true
-
-  roles:
-    - prebake/ssh
