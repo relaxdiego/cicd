@@ -1,6 +1,10 @@
 # CI/CD Kit
 
-Bootstraps a CI/CD cluster for you.
+This is an experimental project that I'm using to bootstrap a CI/CD
+cluster. Currently, I'm building this project with zero automated
+testing but I expect that it will have one in the future. The ultimate
+goal is to have a self-bootstrapping CI/CD cluster. Whether that's even
+possible, I have no idea yet. I am hopeful though.
 
 
 ## Development Guide
@@ -45,4 +49,22 @@ dev cluster locally using Vagrant.
 
 ```
 make local-cluster
+```
+
+
+### Clean Up the Local Cluster
+
+When you're done and want to remove the local cluster, run:
+
+```
+make local-cluster-implode
+```
+
+
+### More Make Goals
+
+To see more Make goals, run:
+
+```
+make help
 ```
