@@ -13,5 +13,5 @@
   hosts: gitlab_hosts
   become: true
 
-  # roles:
-  #   - gitlab-ee
+  roles:
+    - gitlab-ee

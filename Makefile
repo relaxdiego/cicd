@@ -2,11 +2,6 @@
 
 ## Available Goals:
 
-##   box                   : Builds a Vagrant box for local development
-##
-.PHONY: box
-box : .tmp/output/local-cluster.box
-
 ##   cluster               : Instantiates a cluster defined in the path pointed to
 ##                           by the configdir argument. Example:
 ##
@@ -56,7 +51,7 @@ gitlab :
 ##   local-cluster         : Instantiates a local cluster for development purposes
 ##
 .PHONY: local-cluster
-local-cluster : box .make-flag-local-cluster-created
+local-cluster : .make-flag-local-cluster-created
 .make-flag-local-cluster-created :
 	@configdir=local-cluster/ scripts/instantiate-cluster
 	touch .make-flag-local-cluster-created
@@ -80,8 +75,3 @@ local-gitlab : local-cluster
 .PHONY : help
 help : Makefile
 	@sed -n 's/^##//p' $<
-
-.tmp/output/local-cluster.box : builder/* builder/ubuntu/subiquity/http/*
-	@packer -v 1>/dev/null 2>&1 || (echo "Please install Packer v1.6.x" && exit 1)
-	@PACKER_CACHE_DIR=.tmp/packer_cache time packer build -force -only=local-cluster builder/template.json
-	@(vagrant box list | grep 'local-cluster') && vagrant box remove -f 'local-cluster' || true

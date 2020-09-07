@@ -1,5 +1,5 @@
 {
-    "_comment": "See builder/README.md for notes",
+    "_comment": "UNUSED FOR NOW! See builder/README.md for notes",
 
     "variables": {
         "output_directory": ".tmp/output",

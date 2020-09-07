@@ -30,18 +30,6 @@ echo "export PATH=/usr/local/opt/grep/libexec/gnubin:$PATH"" >> ~/.bash_profile
 ```
 
 
-### Build the Vagrant Box
-
-To ensure that everything is in code, we start by locally building our
-machine image using VirtualBox. We will then post process that image to
-generate a Vagrant box which we will later use when developing our
-configuration scripts.
-
-```
-make box
-```
-
-
 ### Instantiate a Local Cluster
 
 To facilitate a faster development workflow, we will instantiate a

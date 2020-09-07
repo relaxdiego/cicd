@@ -7,12 +7,7 @@ Vagrant.configure(2) do |config|
   #
   # Common configuration
   #
-  config.ssh.username = 'ubuntu'
-  config.ssh.password = 'ubuntu'
-  config.ssh.insert_key = true
-  config.vm.box = 'local-cluster'
-  config.vm.box_url = 'file://../.tmp/output/local-cluster.box'
-  # We don't need this and it certainly doesn't work
+  config.vm.box = "ubuntu/focal64"
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   #
@@ -25,6 +20,10 @@ Vagrant.configure(2) do |config|
       vbox.gui    = false
       vbox.cpus   = 2
       vbox.memory = 4096
+
+      # BUG: https://github.com/hashicorp/vagrant/issues/11777
+      vbox.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+      vbox.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
     end
   end
 
@@ -38,6 +37,10 @@ Vagrant.configure(2) do |config|
       vbox.gui    = false
       vbox.cpus   = 2
       vbox.memory = 4096
+
+      # BUG: https://github.com/hashicorp/vagrant/issues/11777
+      vbox.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
+      vbox.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
     end
   end
 end
