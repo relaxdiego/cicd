@@ -11,19 +11,27 @@
 configdir="$(scripts/get_abspath $configdir)"
 echo "Cluster configdir is at ${configdir}"
 
-get_inventory_hook=${configdir}/hooks/get-inventory
-echo "Looking for inventory script at ${get_inventory_hook}"
-[ ! -x "${get_inventory_hook}" ] && \
-    echo "ERROR: ${get_inventory_hook} does not exist" && \
+hook=${configdir}/hooks/pre-configure
+[ ! -e "${hook}" ] && \
+    echo "ERROR: Hook ${hook} does not exist." && \
     exit 1
-# NOTE: The hook may return a comma-delimited string of hostnames/IPs
-#       OR a path to an inventory file. Ansible accepts either.
-inventory=$($get_inventory_hook)
+
+[ ! -x "${hook}" ] && \
+    echo "ERROR: Hook ${hook} exists but is not executable." && \
+    exit 1
+
+source $hook
+
+[ -z "${inventory}" ] && \
+    echo "ERROR: \$inventory was not defined by hook ${hook}" && \
+    exit 1
 
 cd configurator
 set -x
 
-ansible-playbook --inventory ${inventory} \
+ansible-playbook \
+    --inventory ${inventory} \
+    --extra-vars "@${configdir}/vars.yml" \
     gitlab.yml
 
 { set +x; } 2>/dev/null

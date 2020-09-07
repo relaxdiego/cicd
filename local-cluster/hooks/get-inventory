@@ -1,4 +1,0 @@
-#!/usr/bin/env bash -e
-cd $configdir
-source lib/environment
-echo -n "$configdir/hosts"

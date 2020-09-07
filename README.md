@@ -39,6 +39,20 @@ dev cluster locally using Vagrant.
 make local-cluster
 ```
 
+Once provisioning has completed, you should now be able to ssh to your
+dev cluster's machines:
+
+```
+ssh gitlab
+ssh runner
+```
+
+You should also be able to browse to your dev GitLab instance:
+
+```
+curl -L http://gitlab.localdev
+```
+
 
 ### Clean Up the Local Cluster
 

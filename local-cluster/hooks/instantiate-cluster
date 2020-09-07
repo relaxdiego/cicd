@@ -15,3 +15,25 @@ touch ~/.ssh/config
 echo "$local_cluster_ssh_config_marker_start" >> ~/.ssh/config
 vagrant ssh-config >> ~/.ssh/config
 echo "$local_cluster_ssh_config_marker_end" >> ~/.ssh/config
+
+#
+# Add $local_gitlab_fqdn to local machine's /etc/hosts so that the dev
+# can browse to it via http(s)://${gitlab_fqdn}
+#
+etc_hosts_entries=$(cat << EOF
+$local_cluster_etc_hosts_marker_start
+$local_gitlab_ip $local_gitlab_fqdn
+$local_cluster_etc_hosts_marker_end
+EOF
+)
+# Ensure that we start in a new line
+([ -s /etc/hosts ] && [ -z "$(tail -c 1 /etc/hosts)" ]) || \
+    etc_hosts_entries="$(echo)${etc_hosts_entries}"
+echo
+echo "The following will be added to your /etc/hosts:"
+echo
+echo "${etc_hosts_entries}"
+echo
+
+sudo bash -c "sed -i \"/$local_cluster_etc_hosts_marker_start/,/$local_cluster_etc_hosts_marker_end/ d\" /etc/hosts; echo \"${etc_hosts_entries}\" >> /etc/hosts"
+echo "Static entries added to your /etc/hosts"
