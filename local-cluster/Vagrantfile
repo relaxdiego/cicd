@@ -1,13 +1,22 @@
 # -*- mode: ruby -*-
 # # vi: set ft=ruby :
 
+#
+# NOTE: This has been tested with a very specific set of tools. Please
+#       see this bug for more info: https://github.com/hashicorp/vagrant/issues/11849
+#
+
 Vagrant.require_version ">= 2.2.9"
 
 Vagrant.configure(2) do |config|
   #
   # Common configuration
   #
-  config.vm.box = "ubuntu/focal64"
+
+  # The box 'ubuntu/bionic64' only works with virtualbox
+  config.vm.box = "bento/ubuntu-18.04"
+
+  # We don't need shared folders for the local cluster
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   #
@@ -16,14 +25,10 @@ Vagrant.configure(2) do |config|
   config.vm.define 'gitlab' do |gitlab|
     gitlab.vm.network 'private_network', ip: ENV['local_gitlab_ip']
 
-    gitlab.vm.provider :virtualbox do |vbox|
-      vbox.gui    = false
-      vbox.cpus   = 2
-      vbox.memory = 4096
-
-      # BUG: https://github.com/hashicorp/vagrant/issues/11777
-      vbox.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-      vbox.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
+    gitlab.vm.provider :vmware_desktop do |v|
+      v.gui    = false
+      v.cpus   = 2
+      v.memory = 4096
     end
   end
 
@@ -33,14 +38,10 @@ Vagrant.configure(2) do |config|
   config.vm.define 'runner' do |runner|
     runner.vm.network 'private_network', ip: ENV['local_runner_ip']
 
-    runner.vm.provider :virtualbox do |vbox|
-      vbox.gui    = false
-      vbox.cpus   = 2
-      vbox.memory = 4096
-
-      # BUG: https://github.com/hashicorp/vagrant/issues/11777
-      vbox.customize ["modifyvm", :id, "--uart1", "0x3F8", "4"]
-      vbox.customize ["modifyvm", :id, "--uartmode1", "file", File::NULL]
+    runner.vm.provider :vmware_desktop do |v|
+      v.gui    = false
+      v.cpus   = 2
+      v.memory = 4096
     end
   end
 end
