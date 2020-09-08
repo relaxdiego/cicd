@@ -17,12 +17,12 @@ vagrant ssh-config >> ~/.ssh/config
 echo "$local_cluster_ssh_config_marker_end" >> ~/.ssh/config
 
 #
-# Add $local_gitlab_fqdn to local machine's /etc/hosts so that the dev
-# can browse to it via http(s)://${gitlab_fqdn}
+# Add $local_gitlab_external_url to local machine's /etc/hosts so that the dev
+# can browse to it via http(s)://${local_gitlab_external_url}
 #
 etc_hosts_entries=$(cat << EOF
 $local_cluster_etc_hosts_marker_start
-$local_gitlab_ip $local_gitlab_fqdn
+$local_gitlab_ip $local_gitlab_external_url
 $local_cluster_etc_hosts_marker_end
 EOF
 )

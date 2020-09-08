@@ -7,19 +7,3 @@
       - ca-certificates
       - tzdata
     update_cache: yes
-
-- name: Ensure tmp dir
-  file:
-    path: "{{ tmp_dir }}"
-    state: directory
-
-- name: Download GitLab Package Repo Adder
-  get_url:
-    url: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh
-    dest: "{{ gitlab_package_repo_adder }}"
-    mode: 0500
-
-- name: Execute GitLab Package Repo Adder
-  shell: "{{ gitlab_package_repo_adder }} > {{ gitlab_package_repo_adder }}.log"
-  args:
-    creates: "{{ gitlab_package_repo_adder }}.log"

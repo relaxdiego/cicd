@@ -1,4 +1,5 @@
 ---
 tmp_dir: "{{ ansible_env.HOME }}/.cicd"
 
-gitlab_package_repo_adder: "{{ tmp_dir }}/add-package-repo.sh"
+# More options in configurator/roles/gitlab/defaults/main.yml
+gitlab_edition: "gitlab-ee"  # Allows us to upgrade from CE to EE seamlessly

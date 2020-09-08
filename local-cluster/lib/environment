@@ -3,7 +3,7 @@
     echo "ERROR: ${configdir}/vars.yml does not exist!" && \
     exit 1
 
-export local_gitlab_fqdn=$(grep "gitlab_fqdn:" "${configdir}/vars.yml" | sed "s/gitlab_fqdn: *//g")
+export local_gitlab_external_url=$(grep "gitlab_external_url:" "${configdir}/vars.yml" | sed "s/gitlab_external_url: *//g")
 
 export local_gitlab_ip='192.168.246.10'
 export local_runner_ip='192.168.246.11'
