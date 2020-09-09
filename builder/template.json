@@ -1,111 +1,32 @@
 {
     "_comment": "UNUSED FOR NOW! See builder/README.md for notes",
 
-    "variables": {
-        "output_directory": ".tmp/output",
-        "ssh_username": "ubuntu",
-        "ssh_password": "ubuntu"
-    },
-
     "builders": [
         {
           "name": "local-cluster",
-          "type": "virtualbox-iso",
-
-          "guest_os_type": "Ubuntu_64",
-          "cpus": 2,
-          "memory": 6144,
-          "headless": true,
-          "guest_additions_mode": "disable",
-          "vboxmanage": [
-              ["modifyvm", "{{.Name}}", "--vram", "128"]
-          ],
-
-          "iso_urls": [
-            ".tmp/iso/ubuntu-20.04-live-server-amd64.iso"
-          ],
-          "iso_checksum": "sha256:caf3fd69c77c439f162e2ba6040e9c320c4ff0d69aad1340a514319a9264df9f",
-
-          "http_directory": "builder/ubuntu/subiquity/http",
-          "output_directory": "{{user `output_directory`}}/",
-
-          "boot_wait": "5s",
-          "boot_command": [
-            "<enter><enter><f6><esc><wait> ",
-            "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-            "<enter><wait>"
-          ],
-
-          "shutdown_command": "sudo -S shutdown -P now",
-
-          "ssh_username": "{{user `ssh_username`}}",
-          "ssh_password": "{{user `ssh_password`}}",
-          "ssh_pty": true,
-          "ssh_timeout": "20m",
-          "ssh_handshake_attempts": "20"
+          "type": "vagrant",
+          "provider": "vmware_desktop",
+          "communicator": "ssh",
+          "output_dir": ".tmp/output",
+          "source_path": "bento/ubuntu-18.04"
         }
     ],
 
     "provisioners": [
         {
             "type": "ansible",
-            "except": [
+            "only": [
                 "local-cluster"
             ],
-            "pause_before": "10s",
-            "user": "{{user `ssh_username`}}",
-            "playbook_file": "configurator/pre-bake-common.yml",
+            "playbook_file": "configurator/gitlab.yml",
             "extra_arguments": [
                 "--connection=ssh",
-                "--extra-vars", "ansible_ssh_pass={{user `ssh_password`}}",
+                "--tags=prebake",
                 "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"
             ],
             "ansible_env_vars": [
                 "ANSIBLE_SCP_IF_SSH=True"
             ]
-        },
-        {
-            "type": "ansible",
-            "only": [
-                "local-cluster"
-            ],
-            "user": "{{user `ssh_username`}}",
-            "playbook_file": "configurator/pre-bake-local-cluster.yml",
-            "extra_arguments": [
-                "--connection=ssh",
-                "--extra-vars", "ansible_ssh_pass={{user `ssh_password`}}",
-                "--extra-vars", "ansible_python_interpreter=/usr/bin/python3"
-            ],
-            "ansible_env_vars": [
-                "ANSIBLE_SCP_IF_SSH=True"
-            ]
-        },
-        {
-            "type": "shell",
-            "only": [
-                "local-cluster"
-            ],
-            "inline":[
-                "sudo sed -rie 's/^#? *(PasswordAuthentication)([[:space:]]+)no/\\1\\2yes/' /etc/ssh/sshd_config"
-            ]
-        },
-        {
-            "type": "shell",
-            "inline":[
-                "sudo rm -rf /home/*/.ssh",
-                "sudo rm -f /etc/ssh/ssh_host_*"
-            ]
-        }
-    ],
-    "post-processors": [
-        {
-            "type": "vagrant",
-            "only": [
-                "local-cluster"
-            ],
-            "compression_level": 1,
-            "output": "{{user `output_directory`}}/{{.BuildName}}.box",
-            "keep_input_artifact": true
         }
     ]
 }
