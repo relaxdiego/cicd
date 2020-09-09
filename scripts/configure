@@ -32,6 +32,7 @@ set -x
 ansible-playbook \
     --inventory ${inventory} \
     --extra-vars "@${configdir}/vars.yml" \
+    --extra-vars "ansible_python_interpreter=/usr/bin/python3" \
     gitlab.yml
 
 { set +x; } 2>/dev/null
