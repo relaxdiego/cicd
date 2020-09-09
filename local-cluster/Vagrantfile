@@ -6,6 +6,21 @@
 #       see this bug for more info: https://github.com/hashicorp/vagrant/issues/11849
 #
 
+#
+# NOTE: If port collission errors happen with Vagrant vmware_desktop
+#       provider, try running the following in order:
+#
+#       0. Ensure VMware Desktop/Fusion is closed
+#       1. make local-cluster-implode
+#       2. rm -rf .local-cluster/.vagrant
+#       3. Remove the corresponding port entry in /Library/Preferences/VMWare\ Fusion/networking
+#       4. Remove the corresponding port entry in /Library/Preferences/VMWare\ Fusion/vmnet8/nat.conf
+#       5. sudo rm -f /opt/vagrant-vmware-desktop/settings/nat.json
+#       6. sudo killall vagrant-vmware-utility
+#       7. make local-cluster
+#
+#       Reference: https://www.cryptica.me/blog/port-forward-collision/
+
 Vagrant.require_version ">= 2.2.9"
 
 Vagrant.configure(2) do |config|
