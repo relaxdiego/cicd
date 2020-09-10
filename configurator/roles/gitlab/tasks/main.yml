@@ -59,6 +59,8 @@
   command:
     cmd: /usr/bin/apt-get install --download-only {{ gitlab_package_name | default(gitlab_edition) }}
     warn: false
+  args:
+    creates: /var/cache/apt/archives/gitlab*.deb
   tags:
     - prebake
 
