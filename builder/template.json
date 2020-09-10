@@ -40,7 +40,9 @@
           "ssh_password": "ubuntu",
           "ssh_pty": true,
           "ssh_timeout": "20m",
-          "ssh_handshake_attempts": "100"
+          "ssh_handshake_attempts": "100",
+
+          "vmx_remove_ethernet_interfaces": true
         }
     ],
 

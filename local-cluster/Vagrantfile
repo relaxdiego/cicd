@@ -50,8 +50,6 @@ Vagrant.configure(2) do |config|
       v.gui    = false
       v.cpus   = 2
       v.memory = 4096
-
-      v.vmx["ethernet0.pcislotnumber"] = "33"
     end
   end
 
@@ -65,8 +63,6 @@ Vagrant.configure(2) do |config|
       v.gui    = false
       v.cpus   = 2
       v.memory = 4096
-
-      v.vmx["ethernet0.pcislotnumber"] = "33"
     end
   end
 end
