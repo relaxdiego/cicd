@@ -55,6 +55,12 @@
   tags:
     - prebake
 
+- name: Download the GitLab package
+  command:
+    cmd: /usr/bin/apt-get install --download-only {{ gitlab_package_name | default(gitlab_edition) }}
+  tags:
+    - prebake
+
 - name: Install GitLab
   package:
     name: "{{ gitlab_package_name | default(gitlab_edition) }}"
