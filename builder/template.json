@@ -75,14 +75,6 @@
                 "sudo rm -rf /home/*/.ssh",
                 "sudo rm -f /etc/ssh/ssh_host_*"
             ]
-        },
-        {
-            "type": "shell",
-            "execute_command": "sudo -S -E sh -eux '{{.Path}}'",
-            "expect_disconnect": true,
-            "scripts":[
-                "{{template_dir}}/scripts/networking.sh"
-            ]
         }
     ],
     "post-processors": [
