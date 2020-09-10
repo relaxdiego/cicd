@@ -58,6 +58,7 @@
 - name: Download the GitLab package
   command:
     cmd: /usr/bin/apt-get install --download-only {{ gitlab_package_name | default(gitlab_edition) }}
+    warn: false
   tags:
     - prebake
 

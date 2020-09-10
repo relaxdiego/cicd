@@ -48,10 +48,18 @@ cluster-implode :
 gitlab :
 	@configdir=$(configdir) scripts/configure
 
+##   local-box             : Build a Vagrant box using Packer
+##
+.PHONY: local-box
+local-box : .tmp/output/local-cluster.box
+.tmp/output/local-cluster.box : builder/template.json builder/ubuntu/subiquity/http/*
+	@PACKER_CACHE_DIR=.tmp/packer_cache time packer build -force -only=local-cluster builder/template.json
+	vagrant box remove -f local-cluster || true
+
 ##   local-cluster         : Instantiates a local cluster for development purposes
 ##
 .PHONY: local-cluster
-local-cluster : .make-flag-local-cluster-created
+local-cluster : .make-flag-local-cluster-created .tmp/output/local-cluster.box
 .make-flag-local-cluster-created :
 	@configdir=local-cluster/ scripts/instantiate-cluster
 	touch .make-flag-local-cluster-created

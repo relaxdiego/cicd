@@ -4,6 +4,9 @@
 # that should apply to all builders, please add those to
 # configurator/pre-bake-common.yml instead.
 
+# Make sure to run this playbook with `--tags=prebake` so that the gitlab
+# role will only execute the tasks tagged with prebake.
+
 - import_playbook: pre-bake-common.yml
 
 - name: Local Cluster Image Pre-baking Tasks
@@ -11,6 +14,5 @@
   hosts: all
   become: true
 
-  tasks:
-    - debug:
-        msg: Add tasks or roles here that are specific to the local cluster
+  roles:
+    - gitlab

@@ -27,9 +27,15 @@ Vagrant.configure(2) do |config|
   #
   # Common configuration
   #
-
-  # The box 'ubuntu/bionic64' only works with virtualbox
-  config.vm.box = "bento/ubuntu-18.04"
+  config.ssh.username = 'ubuntu'
+  config.ssh.password = 'ubuntu'
+  config.ssh.insert_key = true
+  config.vm.box = 'local-cluster'
+  config.vm.box_url = 'file://../.tmp/output/local-cluster.box'
+  # If you would rather not build your own box, uncomment the following.
+  # Note that it's not guaranteed to be synced to the code in builder/
+  # See https://app.vagrantup.com/mmaglana/boxes/gitlab
+  # config.vm.box = 'mmaglana/gitlab'
 
   # We don't need shared folders for the local cluster
   config.vm.synced_folder '.', '/vagrant', disabled: true
@@ -44,6 +50,8 @@ Vagrant.configure(2) do |config|
       v.gui    = false
       v.cpus   = 2
       v.memory = 4096
+
+      v.vmx["ethernet0.pcislotnumber"] = "33"
     end
   end
 
@@ -57,6 +65,8 @@ Vagrant.configure(2) do |config|
       v.gui    = false
       v.cpus   = 2
       v.memory = 4096
+
+      v.vmx["ethernet0.pcislotnumber"] = "33"
     end
   end
 end

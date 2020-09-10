@@ -51,6 +51,21 @@ echo "export PATH=/usr/local/opt/grep/libexec/gnubin:$PATH"" >> ~/.bash_profile
 ```
 
 
+### Pre-bake Your Local Cluster Box
+
+To speed up the provisioning of your local cluster, it will help to create
+a pre-baked Vagrant box. This process will pre-download the required packages
+so that the installation is faster.
+
+```
+make local-box
+```
+
+If you would rather use a pre-generated, albeit probably stale, box, edit
+local-cluster/Vagrantfile and modify the vm.box settings to use the box
+that I have uploaded to vagrantup.com.
+
+
 ### Instantiate a Local Cluster
 
 To facilitate a faster development workflow, we will instantiate a
