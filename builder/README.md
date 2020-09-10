@@ -1,9 +1,8 @@
-This directory is currently unused. It will be used once we start deploying
-GitLab on major clouds. For now, we avoid custom-built Vagrant boxes since
-it's rather unreliable for that purpose or otherwise fraught with gotchas.
+When running the build, you should be able to VNC to 127.0.0.1:5959 at some point
 
 ### Ubuntu builder references
 
+* https://nickcharlton.net/posts/automating-ubuntu-2004-installs-with-packer.html
 * https://imagineer.in/blog/packer-build-for-ubuntu-20-04/
 * https://gist.github.com/DVAlexHiggs/03cdbef887736f03dcfe6d1749c18669
 

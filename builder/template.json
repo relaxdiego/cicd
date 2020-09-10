@@ -1,14 +1,40 @@
 {
-    "_comment": "UNUSED FOR NOW! See builder/README.md for notes",
+    "_comment": "See builder/README.md for notes",
 
     "builders": [
         {
           "name": "local-cluster",
-          "type": "vagrant",
-          "provider": "vmware_desktop",
-          "communicator": "ssh",
-          "output_dir": ".tmp/output",
-          "source_path": "bento/ubuntu-18.04"
+          "type": "vmware-iso",
+
+          "guest_os_type": "ubuntu-64",
+          "cpus": 2,
+          "memory": 1024,
+          "disk_size": 65536,
+
+          "headless": false,
+
+          "iso_urls": [
+            ".tmp/iso/ubuntu-20.04.1-live-server-amd64.iso"
+          ],
+          "iso_checksum": "sha256:443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93",
+
+          "http_directory": "builder/ubuntu/subiquity/http",
+          "output_directory": ".tmp/output",
+
+          "boot_wait": "5s",
+          "boot_command": [
+            "<enter><enter><f6><esc><wait> ",
+            "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter><wait>"
+          ],
+
+          "shutdown_command": "sudo -S shutdown -P now",
+
+          "ssh_username": "ubuntu",
+          "ssh_password": "ubuntu",
+          "ssh_pty": true,
+          "ssh_timeout": "20m",
+          "ssh_handshake_attempts": "20"
         }
     ],
 
@@ -26,6 +52,22 @@
             ],
             "ansible_env_vars": [
                 "ANSIBLE_SCP_IF_SSH=True"
+            ]
+        },
+        {
+            "type": "shell",
+            "only": [
+                "local-cluster"
+            ],
+            "inline":[
+                "sudo sed -rie 's/^#? *(PasswordAuthentication)([[:space:]]+)no/\\1\\2yes/' /etc/ssh/sshd_config"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline":[
+                "sudo rm -rf /home/*/.ssh",
+                "sudo rm -f /etc/ssh/ssh_host_*"
             ]
         }
     ]
