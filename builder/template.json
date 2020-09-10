@@ -36,7 +36,7 @@
           "ssh_password": "ubuntu",
           "ssh_pty": true,
           "ssh_timeout": "20m",
-          "ssh_handshake_attempts": "20"
+          "ssh_handshake_attempts": "50"
         }
     ],
 
@@ -71,6 +71,14 @@
                 "sudo rm -rf /home/*/.ssh",
                 "sudo rm -f /etc/ssh/ssh_host_*"
             ]
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "vagrant",
+            "compression_level": 1,
+            "output": "{{user `output_directory`}}/{{.BuildName}}.box",
+            "keep_input_artifact": true
         }
     ]
 }
