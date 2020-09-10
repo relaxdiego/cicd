@@ -16,12 +16,16 @@
   changed_when: false
   delegate_to: 127.0.0.1
   register: cached_deb_files
+  tags:
+    - prebake
 
 - name: Copy GitLab deb files to host
   copy:
     src: "{{ gitlab_cache_local_dir }}/{{ item }}"
     dest: "{{ gitlab_cache_remote_dir }}/{{item}}"
   with_items: "{{ cached_deb_files.stdout_lines }}"
+  tags:
+    - prebake
 
 - name: Check if GitLab is already installed.
   stat: path=/usr/bin/gitlab-ctl
@@ -35,8 +39,6 @@
     cache_valid_time: 604800
   tags:
     - prebake
-
-- 
 
 # Install GitLab and its dependencies.
 - name: Install GitLab dependencies.

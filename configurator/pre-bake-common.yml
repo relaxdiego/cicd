@@ -11,4 +11,3 @@
 
   roles:
     - pre-bake/ssh
-    - pre-bake/gitlab-dependencies
