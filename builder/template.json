@@ -40,9 +40,7 @@
           "ssh_password": "ubuntu",
           "ssh_pty": true,
           "ssh_timeout": "20m",
-          "ssh_handshake_attempts": "100",
-
-          "vmx_remove_ethernet_interfaces": true
+          "ssh_handshake_attempts": "100"
         }
     ],
 
@@ -76,6 +74,14 @@
             "inline":[
                 "sudo rm -rf /home/*/.ssh",
                 "sudo rm -f /etc/ssh/ssh_host_*"
+            ]
+        },
+        {
+            "type": "shell",
+            "execute_command": "sudo -S -E sh -eux '{{.Path}}'",
+            "expect_disconnect": true,
+            "scripts":[
+                "{{template_dir}}/scripts/networking.sh"
             ]
         }
     ],
