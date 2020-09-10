@@ -7,15 +7,36 @@ goal is to have a self-bootstrapping CI/CD cluster. Whether that's even
 possible, I have no idea yet. I am hopeful though.
 
 
+## Quick Start
+
+NOTE: This part is not well documented yet since I'm still working on
+most of the logic so you'll have to read the code to get a better
+understanding of how it works.
+
+```
+make gitlab configdir=/path/to/config/dir
+```
+
+Basically, what I intend to do with the above is that you should be able
+to define your cluster's config in a separate, non-public repo which
+you can feed to this project so that it can configure your GitLab cluster.
+
+For more Make goals, run `make help`
+
+
 ## Development Guide
 
 
 ### Development Requirements
 
+I have been developing this project using the following tools but you
+should be able to swap out some of them (VMware Fusion) with a few
+modifications.
+
 * [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 * [Packer](https://www.packer.io/downloads.html)
 * [Vagrant](https://www.vagrantup.com/downloads.html)
-* [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+* [VMware Fusion](https://www.vmware.com/asean/products/fusion.html)
 * [sshpass](https://gist.github.com/relaxdiego/f2e09f72e9a54b2262c6acfcd40f7b55)
 
 #### Special Case for macOS
