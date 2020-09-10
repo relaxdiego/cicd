@@ -7,3 +7,5 @@
       - ca-certificates
       - tzdata
     update_cache: yes
+  tags:
+    - prebake

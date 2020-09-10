@@ -5,13 +5,15 @@
         {
           "name": "local-cluster",
           "type": "vmware-iso",
-
           "guest_os_type": "ubuntu-64",
+          "headless": true,
+          "vnc_port_min": 5990,
+          "vnc_port_max": 5990,
+          "vnc_disable_password": true,
+
           "cpus": 2,
           "memory": 1024,
           "disk_size": 65536,
-
-          "headless": false,
 
           "iso_urls": [
             ".tmp/iso/ubuntu-20.04.1-live-server-amd64.iso"
@@ -24,8 +26,8 @@
           "boot_wait": "5s",
           "boot_command": [
             "<enter><enter><f6><esc><wait> ",
-            "autoinstall ds=nocloud-net;seedfrom=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
-            "<enter><wait>"
+            "autoinstall ds=nocloud-net;s=http://{{ .HTTPIP }}:{{ .HTTPPort }}/",
+            "<enter>"
           ],
 
           "shutdown_command": "sudo -S shutdown -P now",

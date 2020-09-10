@@ -6,9 +6,13 @@
     src: ssh-keygen.service
     dest: /etc/systemd/system/
     mode: 0644
+  tags:
+    - prebake
 
 - name: Enable ssh-keygen service
   systemd:
     name: ssh-keygen
     enabled: yes
     daemon_reload: yes
+  tags:
+    - prebake

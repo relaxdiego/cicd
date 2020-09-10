@@ -1,26 +1,36 @@
 ---
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_os_family }}.yml"
+  tags:
+    - prebake
 
 - name: Check if GitLab configuration file already exists.
   stat: path=/etc/gitlab/gitlab.rb
   register: gitlab_config_file
+  tags:
+    - prebake
 
 - name: Check if GitLab is already installed.
   stat: path=/usr/bin/gitlab-ctl
   register: gitlab_file
+  tags:
+    - prebake
 
 # Install GitLab and its dependencies.
 - name: Install GitLab dependencies.
   package:
     name: "{{ gitlab_dependencies }}"
     state: present
+  tags:
+    - prebake
 
 - name: Install GitLab dependencies (Debian).
   apt:
     name: gnupg2
     state: present
   when: ansible_os_family == 'Debian'
+  tags:
+    - prebake
 
 - name: Download GitLab repository installation script.
   get_url:
@@ -28,16 +38,22 @@
     dest: /tmp/gitlab_install_repository.sh
     validate_certs: "{{ gitlab_download_validate_certs }}"
   when: not gitlab_file.stat.exists
+  tags:
+    - prebake
 
 - name: Install GitLab repository.
   command: bash /tmp/gitlab_install_repository.sh
   register: output
   when: not gitlab_file.stat.exists
+  tags:
+    - prebake
 
 - name: Define the Gitlab package name.
   set_fact:
     gitlab_package_name: "{{ gitlab_edition }}{{ gitlab_package_version_separator }}{{ gitlab_version }}"
   when: gitlab_version | default(false)
+  tags:
+    - prebake
 
 - name: Install GitLab
   package:
