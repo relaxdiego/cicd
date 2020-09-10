@@ -1,5 +1,7 @@
 #!/usr/bin/env bash -e
 
+export tmpdir=$(scripts/get_abspath .tmp)
+
 [ -z "$configdir" ] && \
     echo "ERROR: configdir was not provided" && \
     exit 1

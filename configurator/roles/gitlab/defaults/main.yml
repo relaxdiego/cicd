@@ -73,3 +73,6 @@ gitlab_registry_enable: "false"
 gitlab_registry_external_url: "https://gitlab.example.com:4567"
 gitlab_registry_nginx_ssl_certificate: "/etc/gitlab/ssl/gitlab.crt"
 gitlab_registry_nginx_ssl_certificate_key: "/etc/gitlab/ssl/gitlab.key"
+
+gitlab_cache_local_dir: "{{ lookup('env', 'tmpdir') }}/debs"
+gitlab_cache_remote_dir: /var/cache/apt/archives

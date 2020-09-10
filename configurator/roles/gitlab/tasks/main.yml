@@ -10,11 +10,33 @@
   tags:
     - prebake
 
+- name: Check if GitLab deb files already cached
+  shell: ls -1 "{{ gitlab_cache_local_dir }}"
+  become: false
+  changed_when: false
+  delegate_to: 127.0.0.1
+  register: cached_deb_files
+
+- name: Copy GitLab deb files to host
+  copy:
+    src: "{{ gitlab_cache_local_dir }}/{{ item }}"
+    dest: "{{ gitlab_cache_remote_dir }}/{{item}}"
+  with_items: "{{ cached_deb_files.stdout_lines }}"
+
 - name: Check if GitLab is already installed.
   stat: path=/usr/bin/gitlab-ctl
   register: gitlab_file
   tags:
     - prebake
+
+- name: Update apt repository
+  package:
+    update_cache: true
+    cache_valid_time: 604800
+  tags:
+    - prebake
+
+- 
 
 # Install GitLab and its dependencies.
 - name: Install GitLab dependencies.
@@ -104,3 +126,16 @@
     group: root
     mode: 0600
   notify: restart gitlab
+
+- name: Get list of debs to cache locally
+  shell: ls -1 {{ gitlab_cache_remote_dir }}/*.deb
+  register: deb_files
+  changed_when: false
+
+- name: Cache GitLab deb files locally
+  become: false  # Avoid MemoryError problems https://docs.ansible.com/ansible/latest/modules/fetch_module.html
+  fetch:
+    src: "{{ item }}"
+    dest: "{{ gitlab_cache_local_dir }}/"
+    flat: true
+  with_items: "{{ deb_files.stdout_lines }}"
