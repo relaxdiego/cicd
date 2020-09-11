@@ -125,18 +125,38 @@
     mode: 0700
   when: gitlab_create_self_signed_cert | bool
 
-# TODO: Code this more defensively
+- name: Check for API access
+  become: false
+  delegate_to: 127.0.0.1
+  uri:
+    url: "{{ gitlab_external_url }}/api/v4/projects"
+    headers:
+      PRIVATE-TOKEN: "{{ gitlab_root_api_token }}"
+    status_code: [200]
+  ignore_errors: true
+  changed_when: false
+  register: api_access_check
+
 - name: Set root user api token
   shell: |
     gitlab-rails console -e production <<EOF
     user = User.find(1)
-    token = user.personal_access_tokens.create(scopes: [:api], name: 'GitLab Automated Configuration Token')
-    token.set_token("{{ gitlab_root_api_token }}")
+    token = user.personal_access_tokens.create(scopes: [:api], name: 'relaxdiego/cicd')
+    token.set_token "{{ gitlab_root_api_token }}"
     token.save!
     EOF
-    touch {{ ansible_env.HOME }}/.gitlab_root_api_token_set
-  args:
-    creates: "{{ ansible_env.HOME }}/.gitlab_root_api_token_set"
+  when: api_access_check is failed
+
+- name: Validate API access
+  become: false
+  delegate_to: 127.0.0.1
+  uri:
+    url: "{{ gitlab_external_url }}/api/v4/projects"
+    headers:
+      PRIVATE-TOKEN: "{{ gitlab_root_api_token }}"
+    status_code: [200]
+  changed_when: false
+  when: api_access_check is failed
 
 - name: Create self-signed certificate.
   command: >
