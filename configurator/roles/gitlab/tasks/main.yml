@@ -107,6 +107,7 @@
     group: root
     mode: 0600
   notify: restart gitlab
+  register: gitlab_configuration
 
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.

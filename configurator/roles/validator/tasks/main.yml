@@ -11,4 +11,5 @@
 
 - name: Validate SMTP
   command: gitlab-rails runner -e production "Notify.test_email('{{ gitlab_email_from }}', 'SMTP Test From {{ gitlab_external_url }}', 'It Works!').deliver_now"
+  when: gitlab_configuration.changed
   changed_when: false
