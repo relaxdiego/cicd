@@ -57,7 +57,7 @@ To facilitate a faster development workflow, we will instantiate a
 dev cluster locally using Vagrant.
 
 ```
-make local-cluster
+make local-gitlab
 ```
 
 Once provisioning has completed, you should now be able to ssh to your

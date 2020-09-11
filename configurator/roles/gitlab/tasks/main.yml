@@ -19,7 +19,7 @@
   tags:
     - prebake
 
-- name: Cache GitLab and dependencies locally
+- name: Copy the locally cached GitLab packages
   copy:
     src: "{{ gitlab_cache_local_dir }}/{{ item }}"
     dest: "{{ gitlab_cache_remote_dir }}/{{item}}"
@@ -110,7 +110,7 @@
 
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
-- name: Reconfigure GitLab (first run).
+- name: Configure GitLab for the first time
   command: >
     gitlab-ctl reconfigure
     creates=/var/opt/gitlab/bootstrapped

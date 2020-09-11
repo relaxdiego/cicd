@@ -70,6 +70,24 @@ local-cluster-implode :
 local-gitlab : local-cluster
 	@configdir=./local-cluster scripts/configure
 
+##   local-vault-edits     : Edit the Ansible vault file of the local cluster
+##                           Same as running `make vault-edits configdir=./local-cluster`
+##
+.PHONY: local-vault-edits
+local-vault-edits :
+	make vault-edits configdir=local-cluster
+
+##   vault-edits           : Edit the Ansible vault file of $configdir. Example:
+##
+##                             make vault-edits configdir=/path/to/configdir
+##
+.PHONY: vault-edits
+vault-edits :
+	@configdir=${configdir} scripts/ensure-cluster-id
+	@configdir=${configdir} scripts/ensure-vault-password-file
+	@configdir=${configdir} scripts/ensure-vault-file
+	@configdir=${configdir} scripts/edit-vault-file
+
 ##   help                  : Print this help message
 # From: https://swcarpentry.github.io/make-novice/08-self-doc/index.html
 .PHONY : help

@@ -28,11 +28,18 @@ source $hook
     echo "ERROR: \$inventory was not defined by hook ${hook}" && \
     exit 1
 
+cluster_id_path=$(scripts/get_cluster_id_path "${configdir}")
+cluster_id=$(cat $cluster_id_path)
+vault_password_path=$(scripts/get_vault_password_path "${cluster_id}")
+vault_file="${configdir}/vault.yml"
+
 cd configurator
 set -x
 
 ansible-playbook \
     --inventory ${inventory} \
+    --extra-vars "@${vault_file}" \
+    --vault-password-file "${vault_password_path}" \
     --extra-vars "@${configdir}/vars.yml" \
     --extra-vars "ansible_python_interpreter=/usr/bin/python3" \
     gitlab.yml

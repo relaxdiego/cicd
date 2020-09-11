@@ -1,0 +1,19 @@
+#!/usr/bin/env bash -e
+
+[ -z "$configdir" ] && \
+    echo "ERROR: configdir was not provided" && \
+    exit 1
+
+[ ! -d "$configdir" ] && \
+    echo "ERROR: $configdir does not exist" && \
+    exit 1
+
+configdir="$(scripts/get_abspath $configdir)"
+cluster_id_path=$(scripts/get_cluster_id_path "${configdir}")
+cluster_id=$(cat $cluster_id_path)
+vault_password_path=$(scripts/get_vault_password_path "${cluster_id}")
+vault_file="${configdir}/vault.yml"
+
+ansible-vault edit \
+    --vault-password-file "${vault_password_path}" \
+    "${vault_file}"

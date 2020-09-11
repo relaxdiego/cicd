@@ -1,0 +1,15 @@
+#!/usr/bin/env bash -e
+
+[ -z "$configdir" ] && \
+    echo "ERROR: configdir was not provided" && \
+    exit 1
+
+[ ! -d "$configdir" ] && \
+    echo "ERROR: $configdir does not exist" && \
+    exit 1
+
+configdir="$(scripts/get_abspath $configdir)"
+cluster_id_path=$(scripts/get_cluster_id_path "${configdir}")
+[ ! -f "$cluster_id_path" ] && \
+    uuidgen > $cluster_id_path
+exit 0

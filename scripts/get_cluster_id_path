@@ -1,0 +1,6 @@
+#!/usr/bin/env bash -e
+# NOTE: Any echos made here will not be displayed on the terminal since
+# it will be captured by the parent process. If you want to check for
+# the presence of $1, do the check in the parent process.
+configdir="$1"
+echo -n "${configdir}/.cluster-id"

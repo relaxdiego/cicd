@@ -1,0 +1,8 @@
+---
+# More options in configurator/roles/gitlab/defaults/main.yml
+gitlab_external_url: http://gitlab.localdev
+
+gitlab_extra_settings:
+  - gitlab_rails:
+    - key: initial_root_password
+      value: "{{ vault_gitlab_initial_root_password }}"
