@@ -125,6 +125,17 @@
     mode: 0700
   when: gitlab_create_self_signed_cert | bool
 
+- name: Wait for API to be ready
+  become: false
+  delegate_to: 127.0.0.1
+  uri:
+    url: "{{ gitlab_external_url }}/api/v4/projects"
+    status_code: [401, 200]
+  register: api
+  until: api.status == 401 or api.status == 200
+  retries: 60
+  delay: 1
+
 - name: Check for API access
   become: false
   delegate_to: 127.0.0.1
@@ -147,17 +158,6 @@
     EOF
   when: api_access_check is failed
 
-- name: Validate API access
-  become: false
-  delegate_to: 127.0.0.1
-  uri:
-    url: "{{ gitlab_external_url }}/api/v4/projects"
-    headers:
-      PRIVATE-TOKEN: "{{ gitlab_root_api_token }}"
-    status_code: [200]
-  changed_when: false
-  when: api_access_check is failed
-
 - name: Create self-signed certificate.
   command: >
     openssl req -new -nodes -x509 -subj "{{ gitlab_self_signed_cert_subj }}"
@@ -177,3 +177,5 @@
     dest: "{{ gitlab_cache_local_dir }}/"
     flat: true
   with_items: "{{ deb_files.stdout_lines }}"
+
+- meta: flush_handlers
