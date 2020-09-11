@@ -19,7 +19,7 @@
   tags:
     - prebake
 
-- name: Copy GitLab deb files to host
+- name: Cache GitLab and dependencies locally
   copy:
     src: "{{ gitlab_cache_local_dir }}/{{ item }}"
     dest: "{{ gitlab_cache_remote_dir }}/{{item}}"
@@ -96,6 +96,18 @@
   poll: 5
   when: not gitlab_file.stat.exists
 
+# This needs to be created before gitlab-ctl reconfigure executes
+# otherwise our setting for gitla['initial_root_password'] will
+# not be honored.
+- name: Copy GitLab configuration file.
+  template:
+    src: "{{ gitlab_config_template }}"
+    dest: /etc/gitlab/gitlab.rb
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart gitlab
+
 # Start and configure GitLab. Sometimes the first run fails, but after that,
 # restarts fix problems, so ignore failures on this run.
 - name: Reconfigure GitLab (first run).
@@ -119,15 +131,6 @@
     -days 3650 -keyout {{ gitlab_ssl_certificate_key }} -out {{ gitlab_ssl_certificate }} -extensions v3_ca
     creates={{ gitlab_ssl_certificate }}
   when: gitlab_create_self_signed_cert | bool
-
-- name: Copy GitLab configuration file.
-  template:
-    src: "{{ gitlab_config_template }}"
-    dest: /etc/gitlab/gitlab.rb
-    owner: root
-    group: root
-    mode: 0600
-  notify: restart gitlab
 
 - name: Get list of debs to cache locally
   shell: ls -1 {{ gitlab_cache_remote_dir }}/*.deb
