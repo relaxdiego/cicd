@@ -2,9 +2,36 @@
 # More options in configurator/roles/gitlab/defaults/main.yml
 gitlab_external_url: http://gitlab.localdev
 
+# smtp settings are define further below
+gitlab_email_enabled: "true"
+gitlab_email_from: "{{ vault_smtp_username }}"
+gitlab_email_display_name: "gitlab.localdev"
+gitlab_email_reply_to: "{{ vault_smtp_username }}"
+
 gitlab_extra_settings:
   - gitlab_rails:
     - key: initial_root_password
       value: "{{ vault_gitlab_initial_root_password }}"
+
+    - key: smtp_enable
+      value: "true"
+    - key: smtp_address
+      value: smtp.gmail.com
+    - key: smtp_port
+      value: 465
+    - key: smtp_user_name
+      value: "{{ vault_smtp_username }}"
+    - key: smtp_password
+      value: "{{ vault_smtp_password }}"
+    - key: smtp_domain
+      value: smtp.gmail.com
+    - key: smtp_authentication
+      value: login
+    - key: smtp_enable_starttls_auto
+      value: "true"
+    - key: smtp_tls
+      value: "true"
+    - key: smtp_openssl_verify_mode
+      value: peer
 
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
