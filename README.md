@@ -1,4 +1,6 @@
-# CI/CD Kit
+<p align="center">
+  <img src="https://raw.githubusercontent.com/relaxdiego/cicd/main/logo.png">
+</p>
 
 This is an experimental project that I'm using to bootstrap a CI/CD
 cluster. Currently, I'm building this project with zero automated
