@@ -6,3 +6,5 @@ gitlab_extra_settings:
   - gitlab_rails:
     - key: initial_root_password
       value: "{{ vault_gitlab_initial_root_password }}"
+
+gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"

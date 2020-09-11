@@ -125,6 +125,19 @@
     mode: 0700
   when: gitlab_create_self_signed_cert | bool
 
+# TODO: Code this more defensively
+- name: Set root user api token
+  shell: |
+    gitlab-rails console -e production <<EOF
+    user = User.find(1)
+    token = user.personal_access_tokens.create(scopes: [:api], name: 'GitLab Automated Configuration Token')
+    token.set_token("{{ gitlab_root_api_token }}")
+    token.save!
+    EOF
+    touch {{ ansible_env.HOME }}/.gitlab_root_api_token_set
+  args:
+    creates: "{{ ansible_env.HOME }}/.gitlab_root_api_token_set"
+
 - name: Create self-signed certificate.
   command: >
     openssl req -new -nodes -x509 -subj "{{ gitlab_self_signed_cert_subj }}"
