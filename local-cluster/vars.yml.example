@@ -35,3 +35,30 @@ gitlab_extra_settings:
       value: peer
 
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
+
+users:
+  # Placing the values in vault.yml is optional. You can place it here
+  # directly as you wish.
+
+  # User creation keys at https://docs.gitlab.com/ee/api/users.html#user-creation
+
+  - name: "{{ vault_user_1_name }}"
+    admin: true
+    email: "{{ vault_user_1_email }}"
+    force_random_password: true
+    username: "{{ vault_user_1_username}}"
+    # Pubkeys may be in the form of paths relative to the configdir or URLs
+    ssh_pubkeys:
+      - "{{ vault_user_1_ssh_pubkey }}"
+    gpg_pubkeys:
+      - "{{ vault_user_1_gpg_pubkey }}"
+
+  - name: "{{ vault_user_2_name }}"
+    admin: true
+    email: "{{ vault_user_2_email }}"
+    force_random_password: true
+    username: "{{ vault_user_2_username}}"
+    ssh_pubkeys:
+      - "{{ vault_user_2_ssh_pubkey }}"
+    gpg_pubkeys:
+      - "{{ vault_user_2_gpg_pubkey }}"

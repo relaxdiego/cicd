@@ -33,6 +33,9 @@ cluster_id=$(cat $cluster_id_path)
 vault_password_path=$(scripts/get_vault_password_path "${cluster_id}")
 vault_file="${configdir}/vault.yml"
 
+[ ! -z "${tags}" ] && tags_arg="--tags ${tags}"
+[ ! -z "${verbose}" ] && verbosity_arg="-${verbose}"
+
 cd configurator
 set -x
 
@@ -41,6 +44,7 @@ ansible-playbook \
     --extra-vars "@${vault_file}" \
     --vault-password-file "${vault_password_path}" \
     --extra-vars "@${configdir}/vars.yml" \
+    ${tags_arg} ${verbosity_arg} \
     --extra-vars "ansible_python_interpreter=/usr/bin/python3" \
     gitlab.yml
 

@@ -1,0 +1,46 @@
+---
+- name: Check if user "{{ user.username }}" exists
+  uri:
+    url: "{{ api_base_url }}/users?username={{ user.username }}"
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200]
+  register: check_user
+
+- when: check_user.json | length == 0
+  block:
+    - name: Create user "{{ user.username }}"
+      uri:
+        url: "{{ api_base_url }}/users"
+        method: POST
+        headers:
+          "{{ common_admin_headers }}"
+        body: >-
+          email={{ user.email }}&
+          username={{ user.username }}&
+          name={{ user.name }}&
+          admin={{ user.admin }}&
+          force_random_password=true&
+          reset_password=true
+        status_code: [200, 201]
+
+- when: check_user.json | length == 1 and
+        (
+          check_user.json[0].email != user.email or
+          check_user.json[0].username != user.username or
+          check_user.json[0].name != user.name or
+          check_user.json[0].is_admin != user.admin
+        )
+  block:
+    - name: Ensure user details for "{{ user.username }}"
+      uri:
+        url: "{{ api_base_url }}/users/{{ check_user.json[0].id }}"
+        method: PUT
+        headers:
+          "{{ common_admin_headers }}"
+        body: >-
+          email={{ user.email }}&
+          username={{ user.username }}&
+          name={{ user.name }}&
+          admin={{ user.admin }}&
+        status_code: [200, 201]

@@ -1,5 +1,10 @@
 ---
 tmp_dir: "{{ ansible_env.HOME }}/.cicd"
 
+api_base_url: "http://127.0.0.1/api/v4"
+
+common_admin_headers:
+  PRIVATE-TOKEN: "{{ gitlab_root_api_token }}"
+
 # More options in configurator/roles/gitlab/defaults/main.yml
 gitlab_edition: "gitlab-ee"  # Allows us to upgrade from CE to EE seamlessly

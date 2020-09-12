@@ -46,7 +46,7 @@ cluster-implode :
 ##
 .PHONY: gitlab
 gitlab :
-	@configdir=$(configdir) scripts/configure
+	@configdir=$(configdir) tags=${tags} verbose=${verbose} scripts/configure
 
 ##   local-cluster         : Instantiates a local cluster for development purposes
 ##
@@ -68,7 +68,7 @@ local-cluster-implode :
 ##
 .PHONY: local-gitlab
 local-gitlab : local-cluster
-	@configdir=./local-cluster scripts/configure
+	make gitlab configdir=./local-cluster tags=${tags}
 
 ##   local-vault-edits     : Edit the Ansible vault file of the local cluster
 ##                           Same as running `make vault-edits configdir=./local-cluster`

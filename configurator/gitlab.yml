@@ -14,5 +14,12 @@
   become: true
 
   roles:
-    - gitlab
-    - validator
+    - role: gitlab
+
+    - role: validator
+      tags: validate
+
+    - role: user-manager
+      tags:
+        - user
+        - users

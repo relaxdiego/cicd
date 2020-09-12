@@ -1,0 +1,5 @@
+---
+- include: ensure-local-user.yml
+  vars:
+    user: "{{item}}"
+  with_items: "{{ local_users }}"
