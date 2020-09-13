@@ -1,0 +1,30 @@
+---
+- name: Get saved SSH pubkeys for {{ user_username }}
+  uri:
+    url: "{{ api_base_url }}/users/{{ user_id }}/keys"
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200]
+  register: get_saved_ssh_pubkeys
+
+- name: Set saved_pubkeys fact
+  set_fact:
+    saved_pubkeys: "{{ get_saved_ssh_pubkeys.json }}"
+
+- name: Ensure temp dir {{ tmp_dir }}
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory
+
+- name: Get desired pubkeys from {{ desired_ssh_pubkeys_uri }}
+  get_url:
+    url: "{{ desired_ssh_pubkeys_uri }}"
+    dest: "{{ tmp_dir }}/desired_ssh_pubkeys"
+
+# - with_lines: cat {{ tmp_dir }}/desired_ssh_pubkeys
+#   loop_control:
+#     loop_var: desired_ssh_pubkey
+#   block:
+#   - debug:
+#       var: desired_ssh_pubkey
+#       verbosity: 3

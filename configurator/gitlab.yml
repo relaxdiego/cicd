@@ -21,7 +21,7 @@
 
 
 - name: Configure GitLab
-  gather_facts: false
+  gather_facts: true
   hosts: 127.0.0.1
   connection: local
   become: false

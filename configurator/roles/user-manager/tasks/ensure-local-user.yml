@@ -1,46 +1,66 @@
 ---
-- name: Check if user "{{ user.username }}" exists
+- name: Check if user "{{ desired_user.username }}" exists
   uri:
-    url: "{{ api_base_url }}/users?username={{ user.username }}"
+    url: "{{ api_base_url }}/users?username={{ desired_user.username }}"
     headers:
       "{{ common_admin_headers }}"
     status_code: [200]
   register: check_user
 
-- when: check_user.json | length == 0
+- name: Set user_matches fact
+  set_fact:
+    user_matches: "{{ check_user.json }}"
+
+- when: user_matches | length == 0
   block:
-    - name: Create user "{{ user.username }}"
+    - name: Create user "{{ desired_user.username }}"
       uri:
         url: "{{ api_base_url }}/users"
         method: POST
         headers:
           "{{ common_admin_headers }}"
         body: >-
-          email={{ user.email }}&
-          username={{ user.username }}&
-          name={{ user.name }}&
-          admin={{ user.admin }}&
+          email={{ desired_user.email }}&
+          username={{ desired_user.username }}&
+          name={{ desired_user.name }}&
+          admin={{ desired_user.admin }}&
           force_random_password=true&
           reset_password=true
         status_code: [200, 201]
+      register: create_user
 
-- when: check_user.json | length == 1 and
-        (
-          check_user.json[0].email != user.email or
-          check_user.json[0].username != user.username or
-          check_user.json[0].name != user.name or
-          check_user.json[0].is_admin != user.admin
-        )
+    - name: Set user fact
+      set_fact:
+        user: "{{ create_user.json }}"
+
+- when: user_matches | length == 1
+  name: Set user fact
+  set_fact:
+    user: "{{ user_matches | first }}"
+
+- when: user.email    != desired_user.email or
+        user.name     != desired_user.name or
+        user.is_admin != desired_user.admin
   block:
-    - name: Ensure user details for "{{ user.username }}"
+    - name: Ensure user details for "{{ desired_user.username }}"
       uri:
         url: "{{ api_base_url }}/users/{{ check_user.json[0].id }}"
         method: PUT
         headers:
           "{{ common_admin_headers }}"
         body: >-
-          email={{ user.email }}&
-          username={{ user.username }}&
-          name={{ user.name }}&
-          admin={{ user.admin }}&
+          email={{ desired_user.email }}&
+          name={{ desired_user.name }}&
+          admin={{ desired_user.admin }}&
         status_code: [200, 201]
+      register: ensure_user
+
+    - debug:
+        var: ensure_user
+        verbosity: 3
+
+- include: ensure-user-ssh-pubkeys.yml
+  vars:
+    user_id: "{{ user.id }}"
+    user_username: "{{ user.username }}"
+    desired_ssh_pubkeys_uri: "{{ desired_user.ssh_pubkeys_uri }}"
