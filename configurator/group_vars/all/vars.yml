@@ -1,5 +1,5 @@
 ---
-tmp_dir: "{{ ansible_env.HOME }}/.cicd/{{ cluster_id }}"
+tmp_dir: "{{ ansible_env.HOME }}/.relaxdiego/cicd/tmp/{{ cluster_id }}"
 
 api_base_url: "{{ gitlab_external_url }}/api/v4"
 
