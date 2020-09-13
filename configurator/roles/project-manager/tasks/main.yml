@@ -1,4 +1,27 @@
 ---
+# Define the CI/CD shared library repos
+- include: ensure-project.yml
+  vars:
+    desired_project: "{{ item }}"
+  with_items:
+  # This is where changes to the shared library will be merged and
+  # tested before it goes to the live repo
+  - namespace: cicd
+    name: library-src
+    import_url: https://github.com/relaxdiego/cicd-sample-k8s-app
+    pipeline_type: custom
+
+  # Changes that have passed the shared library's pipeline are pushed
+  # here and will then be available for use by the projects defined
+  # further down this YAML file
+  - namespace: cicd
+    name: library-live
+    pipeline_type: disabled
+    forking_access_level: disabled
+    issues_access_level: disabled
+    merge_requests_access_level: disabled
+
+# Define user projects
 - include: ensure-project.yml
   vars:
     desired_project: "{{ item }}"

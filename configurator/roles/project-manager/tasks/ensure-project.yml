@@ -66,7 +66,7 @@
   block:
   - name: Check if project '{{ path_with_namespace }}' exists
     uri:
-      url: "{{ api_base_url }}/projects?search={{ path_with_namespace }}&search_namespaces=true&simple=true"
+      url: "{{ api_base_url }}/projects?search={{ path_with_namespace }}&search_namespaces=true&simple=false"
       headers:
         "{{ common_admin_headers }}"
       status_code: [200]
@@ -128,17 +128,50 @@
     set_fact:
       project: "{{ create_project.json }}"
 
-- name: Set fact is_new_project
+- name: Set is_new_project fact
   set_fact:
-    is_new_project: "{{ not project_found }}"
+    is_new_project: "{{ create_project is defined }}"
 
 - debug:
     var: project
     verbosity: 3
 
-- name: Set ci_config_path fact
+- name: Set ensure_project_attributes_body fact
   set_fact:
-    ci_config_path: pipelines/{{ desired_project.pipeline_type }}.yml@cicd/library-live
+    ensure_project_attributes_body: >-
+      auto_cancel_pending_pipelines='enabled'&
+      auto_devops_enabled=false&
+      container_registry_enabled={{ desired_project.container_registry_enabled | default('disabled') }}&
+      forking_access_level={{ desired_project.forking_access_level | default('enabled') }}&
+      issues_access_level={{ desired_project.issues_access_level | default('enabled') }}&
+      merge_requests_access_level={{ desired_project.merge_requests_access_level | default('enabled') }}&
+      only_allow_merge_if_pipeline_succeeds=true&
+      pages_access_level={{ desired_project.pages_access_level | default('disabled') }}&
+      repository_access_level={{ desired_project.repository_access_level | default('enabled') }}&
+      snippets_access_level={{ desired_project.snippets_access_level | default('disabled') }}&
+      wiki_access_level={{ desired_project.wiki_access_level | default('disabled') }}
+
+- name: Append shared library path to ensure_project_attributes_body
+  set_fact:
+    ensure_project_attributes_body: >-
+      {{ ensure_project_attributes_body }}&
+      ci_config_path=pipelines/{{ desired_project.pipeline_type }}.yml@cicd/library-live
+  when: desired_project.pipeline_type != 'custom'
+
+- name: Append .gitlab-ci.yml path to ensure_project_attributes_body
+  set_fact:
+    ensure_project_attributes_body: >-
+      {{ ensure_project_attributes_body }}&
+      ci_config_path=.gitlab-ci.yml
+  when: desired_project.pipeline_type == 'custom'
+
+# Disables CI/CD for project
+- name: Append builds_access_level=disabled to ensure_project_attributes_body
+  set_fact:
+    ensure_project_attributes_body: >-
+      {{ ensure_project_attributes_body }}&
+      builds_access_level=disabled
+  when: desired_project.pipeline_type == 'disabled'
 
 - name: Ensure '{{ path_with_namespace }}' attributes
   uri:
@@ -146,7 +179,5 @@
     method: PUT
     headers:
       "{{ common_admin_headers }}"
-    body: >-
-      ci_config_path={{ ci_config_path }}&
-      auto_devops_enabled=false
+    body: "{{ ensure_project_attributes_body }}"
     status_code: [200, 201]
