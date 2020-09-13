@@ -21,6 +21,7 @@ project_defaults:
   auto_devops_enabled: 'false'
   container_registry_enabled: 'false'
   forking_access_level: enabled
+  import_url: ''
   issues_access_level: enabled
   merge_requests_access_level: enabled
   only_allow_merge_if_pipeline_succeeds: 'true'

@@ -105,14 +105,8 @@
     set_fact:
       create_body: >-
         name={{ desired_project.name }}&
-        namespace_id={{ namespace.id }}
-
-  - when: desired_project.import_url is defined
-    name: Append import_url to create_body fact
-    set_fact:
-      create_body: >-
-        {{ create_body }}&
-        import_url={{ desired_project.import_url }}
+        namespace_id={{ namespace.id }}&
+        import_url={{ desired_project.import_url | default(project_defaults.import_url) }}
 
   - name: Create project '{{ path_with_namespace }}'
     uri:
