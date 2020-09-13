@@ -8,7 +8,7 @@
   # tested before it goes to the live repo
   - namespace: cicd
     name: library-src
-    import_url: https://github.com/relaxdiego/cicd-sample-k8s-app
+    import_url: https://github.com/relaxdiego/cicd-library
     pipeline_type: custom
 
   # Changes that have passed the shared library's pipeline are pushed

@@ -139,13 +139,14 @@
 - name: Set ensure_project_attributes_body fact
   set_fact:
     ensure_project_attributes_body: >-
-      auto_cancel_pending_pipelines='enabled'&
+      auto_cancel_pending_pipelines=enabled&
       auto_devops_enabled=false&
-      container_registry_enabled={{ desired_project.container_registry_enabled | default('disabled') }}&
+      container_registry_enabled={{ desired_project.container_registry_enabled | default('false') }}&
       forking_access_level={{ desired_project.forking_access_level | default('enabled') }}&
       issues_access_level={{ desired_project.issues_access_level | default('enabled') }}&
       merge_requests_access_level={{ desired_project.merge_requests_access_level | default('enabled') }}&
       only_allow_merge_if_pipeline_succeeds=true&
+      packages_enabled={{ desired_project.packages_enabled | default('false') }}&
       pages_access_level={{ desired_project.pages_access_level | default('disabled') }}&
       repository_access_level={{ desired_project.repository_access_level | default('enabled') }}&
       snippets_access_level={{ desired_project.snippets_access_level | default('disabled') }}&
