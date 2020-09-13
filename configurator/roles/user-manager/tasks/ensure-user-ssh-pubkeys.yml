@@ -21,10 +21,17 @@
     url: "{{ desired_ssh_pubkeys_uri }}"
     dest: "{{ tmp_dir }}/desired_ssh_pubkeys"
 
-# - with_lines: cat {{ tmp_dir }}/desired_ssh_pubkeys
-#   loop_control:
-#     loop_var: desired_ssh_pubkey
-#   block:
-#   - debug:
-#       var: desired_ssh_pubkey
-#       verbosity: 3
+- with_lines: cat {{ tmp_dir }}/desired_ssh_pubkeys
+  loop_control:
+    loop_var: desired_ssh_pubkey
+  when: desired_ssh_pubkey in (saved_pubkeys | selectattr('key') | list | first)
+  name: Add SSH pubkey
+  uri:
+    url: "{{ api_base_url }}/users/{{ user_id }}/keys"
+    method: POST
+    headers:
+      "{{ common_admin_headers }}"
+    body: >-
+      title=Managed By Relaxdiego CICD&
+      key={{ desired_ssh_pubkey | urlencode }}
+    status_code: [200, 201]
