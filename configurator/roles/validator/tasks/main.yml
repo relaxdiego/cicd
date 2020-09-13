@@ -1,15 +1,19 @@
 ---
 - name: Validate API access
-  become: false
   delegate_to: 127.0.0.1
+  connection: local
+  run_once: true
+  become: false
   uri:
-    url: "{{ gitlab_external_url }}/api/v4/projects"
+    url: "{{ api_base_url }}/projects"
     headers:
-      PRIVATE-TOKEN: "{{ gitlab_root_api_token }}"
+      "{{ common_admin_headers }}"
     status_code: [200]
   changed_when: false
 
 - name: Validate SMTP
+  run_once: true
+  # Send a test email to own inbox
   command: gitlab-rails runner -e production "Notify.test_email('{{ gitlab_email_from }}', 'SMTP Test From {{ gitlab_external_url }}', 'It Works!').deliver_now"
   when: gitlab_configuration.changed
   changed_when: false

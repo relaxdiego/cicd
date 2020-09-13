@@ -12,9 +12,9 @@
 
 - name: Check if GitLab deb files already cached
   shell: ls -1 "{{ gitlab_cache_local_dir }}"
+  delegate_to: 127.0.0.1
   become: false
   changed_when: false
-  delegate_to: 127.0.0.1
   register: cached_deb_files
   tags:
     - prebake
