@@ -52,6 +52,13 @@ echo "export PATH=/usr/local/opt/gnu-sed/libexec/gnubin:$PATH" >> ~/.bash_profil
 echo "export PATH=/usr/local/opt/grep/libexec/gnubin:$PATH"" >> ~/.bash_profile
 ```
 
+Also make sure that your python environment has the right certificates by
+installing the [certifi](https://pypi.org/project/certifi/) package:
+
+```
+pip install certifi
+```
+
 
 ### Instantiate a Local Cluster
 

@@ -42,10 +42,11 @@ set -x
 ansible-playbook \
     --inventory ${inventory} \
     --extra-vars "@${vault_file}" \
+    --extra-vars cluster_id=${cluster_id} \
     --vault-password-file "${vault_password_path}" \
     --extra-vars "@${configdir}/vars.yml" \
     ${tags_arg} ${verbosity_arg} \
-    --extra-vars "ansible_python_interpreter=/usr/bin/python3" \
+    --extra-vars "ansible_python_interpreter='/usr/bin/env python3'" \
     gitlab.yml
 
 { set +x; } 2>/dev/null
