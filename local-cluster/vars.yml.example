@@ -36,7 +36,7 @@ gitlab_extra_settings:
 
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
 
-users:
+local_users:
   # Placing the values in vault.yml is optional. You can place it here
   # directly as you wish.
 
@@ -45,7 +45,6 @@ users:
   - name: "{{ vault_user_1_name }}"
     admin: true
     email: "{{ vault_user_1_email }}"
-    force_random_password: true
     username: "{{ vault_user_1_username}}"
     # Pubkeys may be in the form of paths relative to the configdir or URLs
     ssh_pubkeys:
@@ -56,9 +55,22 @@ users:
   - name: "{{ vault_user_2_name }}"
     admin: true
     email: "{{ vault_user_2_email }}"
-    force_random_password: true
     username: "{{ vault_user_2_username}}"
     ssh_pubkeys:
       - "{{ vault_user_2_ssh_pubkey }}"
     gpg_pubkeys:
       - "{{ vault_user_2_gpg_pubkey }}"
+
+library:
+  import_url: https://github.com/relaxdiego/cicd-library
+
+projects:
+  - namespace: sample
+    name: app1
+    import_url: https://github.com/relaxdiego/cicd-sample-k8s-app
+    pipeline_type: kubernetes-application  # pipelines/kubernetes-applicaton.yml@cicd/library-live
+
+  - namespace: sample
+    name: docker-image1
+    import_url: https://github.com/relaxdiego/cicd-sample-docker-image
+    pipeline_type: docker-image  # pipelines/docker-image.yml@cicd/library-live
