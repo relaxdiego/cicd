@@ -1,0 +1,152 @@
+---
+- when: desired_project.pipeline_type is not defined
+  name: Fail if 'pipeline_type' is not defined
+  fail:
+    msg: pipeline_type field is not defined in project config
+
+- name: Check if namespace '{{ desired_project.namespace }}' exists
+  uri:
+    url: "{{ api_base_url }}/namespaces?search={{ desired_project.namespace }}"
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200]
+  register: check_namespace
+
+- name: Set namespace_matches fact
+  set_fact:
+    namespace_matches: "{{ check_namespace.json }}"
+
+- when: namespace_matches | length == 0
+  block:
+  - name: Create group '{{ desired_project.namespace }}'
+    uri:
+      url: "{{ api_base_url }}/groups"
+      method: POST
+      headers:
+        "{{ common_admin_headers }}"
+      body: >-
+        name={{ desired_project.namespace }}&
+        path={{ desired_project.namespace }}
+      status_code: [200, 201]
+    register: create_group
+
+  - name: Set namespace fact to newly created group '{{ desired_project.namespace }}'
+    set_fact:
+      namespace: "{{ create_group.json }}"
+
+- when: namespace_matches | length > 1
+  block:
+  - debug:
+      msg: Multiple matches for namespace '{{ desired_project.namespace }}' found
+
+  - name: Fail if no exact match for namespace path '{{ desired_project.namespace }}'
+    fail:
+      msg: No exact match found for namespace '{{ desired_project.namespace }}'
+    when: namespace_matches | selectattr('path', 'eq', desired_project.namespace) | list | length == 0
+
+  - name: Set namespace fact to exact match namespace
+    set_fact:
+      namespace: "{{ namespace_matches | selectattr('path', 'eq', desired_project.namespace) | first }}"
+
+- when: namespace_matches | length == 1
+  block:
+  - name: Set namespace fact to only search result
+    set_fact:
+      namespace: "{{ namespace_matches | first }}"
+
+- name: Set fact is_new_namespace
+  set_fact:
+    is_new_namespace: "{{ namespace_matches | length == 0 }}"
+
+- name: Set path_with_namespace fact to '{{ desired_project.namespace }}/{{ desired_project.name }}'
+  set_fact:
+    path_with_namespace: "{{ desired_project.namespace }}/{{ desired_project.name }}"
+
+- when: not is_new_namespace
+  block:
+  - name: Check if project '{{ path_with_namespace }}' exists
+    uri:
+      url: "{{ api_base_url }}/projects?search={{ path_with_namespace }}&search_namespaces=true&simple=true"
+      headers:
+        "{{ common_admin_headers }}"
+      status_code: [200]
+    register: check_project
+
+  - name: Set project_matches fact
+    set_fact:
+      project_matches: "{{ check_project.json }}"
+
+  - when: project_matches | length == 1
+    name: Set project fact to only match
+    set_fact:
+      project: "{{ project_matches | first }}"
+
+  - when: project_matches | length > 1
+    block:
+    - debug:
+        msg: Multiple matches for project '{{ path_with_namespace }}' found
+
+    - name: Fail if no exact match for namespace path '{{ path_with_namespace }}'
+      fail:
+        msg: No exact match found for namespace '{{ path_with_namespace }}'
+      when: project_matches | selectattr('path', 'eq', path_with_namespace) | list | length == 0
+
+    - name: Set project fact to exact match path
+      set_fact:
+        project: "{{ project_matches | selectattr('path', 'eq', path_with_namespace) | list | first }}"
+
+  - name: Set project_found fact
+    set_fact:
+      project_found: "{{ project_matches | length != 0 }}"
+
+- when: is_new_namespace or not project_found
+  block:
+  - name: Set create_body fact
+    set_fact:
+      create_body: >-
+        name={{ desired_project.name }}&
+        namespace_id={{ namespace.id }}
+
+  - when: desired_project.import_url is defined
+    name: Append import_url to create_body fact
+    set_fact:
+      create_body: >-
+        {{ create_body }}&
+        import_url={{ desired_project.import_url }}
+
+  - name: Create project '{{ path_with_namespace }}'
+    uri:
+      url: "{{ api_base_url }}/projects"
+      method: POST
+      headers:
+        "{{ common_admin_headers }}"
+      body: "{{ create_body }}"
+      status_code: [200, 201]
+    register: create_project
+
+  - name: Set project fact to newly created project '{{ path_with_namespace }}'
+    set_fact:
+      project: "{{ create_project.json }}"
+
+- name: Set fact is_new_project
+  set_fact:
+    is_new_project: "{{ not project_found }}"
+
+- debug:
+    var: project
+    verbosity: 3
+
+- name: Set ci_config_path fact
+  set_fact:
+    ci_config_path: pipelines/{{ desired_project.pipeline_type }}.yml@cicd/library-live
+
+- name: Ensure '{{ path_with_namespace }}' attributes
+  uri:
+    url: "{{ api_base_url }}/projects/{{ project.id }}"
+    method: PUT
+    headers:
+      "{{ common_admin_headers }}"
+    body: >-
+      ci_config_path={{ ci_config_path }}&
+      auto_devops_enabled=false
+    status_code: [200, 201]

@@ -1,0 +1,5 @@
+---
+- include: ensure-project.yml
+  vars:
+    desired_project: "{{ item }}"
+  with_items: "{{ projects }}"

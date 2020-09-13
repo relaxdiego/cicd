@@ -31,3 +31,8 @@
       tags:
         - user
         - users
+
+    - role: project-manager
+      tags:
+        - project
+        - projects
