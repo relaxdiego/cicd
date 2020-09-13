@@ -138,19 +138,20 @@
 
 - name: Set ensure_project_attributes_body fact
   set_fact:
+    # project_defaults are defined in configurator/group_vars/all/vars.yml
     ensure_project_attributes_body: >-
-      auto_cancel_pending_pipelines=enabled&
-      auto_devops_enabled=false&
-      container_registry_enabled={{ desired_project.container_registry_enabled | default('false') }}&
-      forking_access_level={{ desired_project.forking_access_level | default('enabled') }}&
-      issues_access_level={{ desired_project.issues_access_level | default('enabled') }}&
-      merge_requests_access_level={{ desired_project.merge_requests_access_level | default('enabled') }}&
-      only_allow_merge_if_pipeline_succeeds=true&
-      packages_enabled={{ desired_project.packages_enabled | default('false') }}&
-      pages_access_level={{ desired_project.pages_access_level | default('disabled') }}&
-      repository_access_level={{ desired_project.repository_access_level | default('enabled') }}&
-      snippets_access_level={{ desired_project.snippets_access_level | default('disabled') }}&
-      wiki_access_level={{ desired_project.wiki_access_level | default('disabled') }}
+      auto_cancel_pending_pipelines={{ desired_project.auto_cancel_pending_pipelines | default(project_defaults.auto_cancel_pending_pipelines) }}&
+      auto_devops_enabled={{ desired_project.auto_devops_enabled | default(project_defaults.auto_devops_enabled) }}&
+      container_registry_enabled={{ desired_project.container_registry_enabled | default(project_defaults.container_registry_enabled) }}&
+      forking_access_level={{ desired_project.forking_access_level | default(project_defaults.forking_access_level) }}&
+      issues_access_level={{ desired_project.issues_access_level | default(project_defaults.issues_access_level) }}&
+      merge_requests_access_level={{ desired_project.merge_requests_access_level | default(project_defaults.merge_requests_access_level) }}&
+      only_allow_merge_if_pipeline_succeeds={{ desired_project.only_allow_merge_if_pipeline_succeeds | default(project_defaults.only_allow_merge_if_pipeline_succeeds) }}&
+      packages_enabled={{ desired_project.packages_enabled | default(project_defaults.packages_enabled) }}&
+      pages_access_level={{ desired_project.pages_access_level | default(project_defaults.pages_access_level) }}&
+      repository_access_level={{ desired_project.repository_access_level | default(project_defaults.repository_access_level) }}&
+      snippets_access_level={{ desired_project.snippets_access_level | default(project_defaults.snippets_access_level) }}&
+      wiki_access_level={{ desired_project.wiki_access_level | default(project_defaults.wiki_access_level) }}
 
 - name: Append shared library path to ensure_project_attributes_body
   set_fact:

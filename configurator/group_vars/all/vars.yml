@@ -10,3 +10,22 @@ common_admin_headers:
 gitlab_edition: "gitlab-ee"  # Allows us to upgrade from CE to EE seamlessly
 
 local_users: []
+
+#
+# Project defaults. Override these keys when defining your projects in your
+# configdir's vars.yml file.
+#
+# Reference: https://docs.gitlab.com/13.3/ee/api/projects.html#edit-project
+project_defaults:
+  auto_cancel_pending_pipelines: enabled
+  auto_devops_enabled: 'false'
+  container_registry_enabled: 'false'
+  forking_access_level: enabled
+  issues_access_level: enabled
+  merge_requests_access_level: enabled
+  only_allow_merge_if_pipeline_succeeds: 'true'
+  packages_enabled: 'false'
+  pages_access_level: disabled
+  repository_access_level: enabled
+  snippets_access_level: disabled
+  wiki_access_level: disabled
