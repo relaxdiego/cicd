@@ -1,0 +1,22 @@
+---
+- name: Get saved GPG pubkeys for {{ user_username }}
+  uri:
+    url: "{{ api_base_url }}/users/{{ user_id }}/gpg_keys"
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200]
+  register: get_saved_gpg_pubkeys
+
+- name: Set saved_pubkeys fact
+  set_fact:
+    saved_pubkeys: "{{ get_saved_gpg_pubkeys.json }}"
+
+- name: Ensure temp dir {{ tmp_dir }}
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory
+
+- name: Get desired GPG pubkeys from {{ desired_gpg_pubkeys_uri }}
+  get_url:
+    url: "{{ desired_gpg_pubkeys_uri }}"
+    dest: "{{ tmp_dir }}/{{ user_username }}-desired_gpg_pubkeys"
