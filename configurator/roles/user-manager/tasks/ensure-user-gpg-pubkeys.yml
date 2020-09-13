@@ -20,3 +20,8 @@
   get_url:
     url: "{{ desired_gpg_pubkeys_uri }}"
     dest: "{{ tmp_dir }}/{{ user_username }}-desired_gpg_pubkeys"
+
+# Load file to string
+# Test if string is JSON
+# Test if JSON list items have key 'raw_key'
+# Add 'raw_key' as GPG key if it's not in GitLab yet
