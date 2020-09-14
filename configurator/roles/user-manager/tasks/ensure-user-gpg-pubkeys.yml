@@ -21,7 +21,30 @@
     url: "{{ desired_gpg_pubkeys_uri }}"
     dest: "{{ tmp_dir }}/{{ user_username }}-desired_gpg_pubkeys"
 
-# Load file to string
-# Test if string is JSON
-# Test if JSON list items have key 'raw_key'
-# Add 'raw_key' as GPG key if it's not in GitLab yet
+- name: Load GPG file
+  set_fact:
+    gpg_obj: "{{ lookup('file', '{{ tmp_dir }}/{{ user_username }}-desired_gpg_pubkeys') }}"
+
+- debug:
+    var: gpg_obj
+    verbosity: 3
+
+# NOTE: This makes the HUGE assumption that the gpg_obj is a JSON string
+#       obtained from https://api.github.com/users/<username>/gpg_keys.
+#       Modify this in the future to allow for other formats.
+- when: gpg_obj | type_debug == 'list'
+  block:
+  - with_items: "{{ gpg_obj }}"
+    loop_control:
+      loop_var: gpg_dict
+    when: saved_pubkeys | selectattr('key', 'eq', gpg_dict.raw_key) | list | length == 0
+    name: Add GPG pubkey
+    uri:
+      url: "{{ api_base_url }}/users/{{ user_id }}/gpg_keys"
+      method: POST
+      headers:
+        "{{ common_admin_headers }}"
+      body: >-
+        key={{ gpg_dict.raw_key | urlencode }}&
+        primary_keyid={{ gpg_dict.subkeys[0].primary_key_id }}
+      status_code: [200,201]
