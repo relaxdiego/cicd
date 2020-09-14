@@ -1,5 +1,27 @@
 ---
+- name: Check if GitLab Runner is already running
+  systemd:
+    name: gitlab-runner
+    state: started
+    enabled: true
+  register: check_gitlab_runner
+  ignore_errors: true
+
+- name: Get GitLab Runner version
+  when: check_gitlab_runner is success
+  block:
+  - name: Get currently installed GitLab Runner's version
+    shell: gitlab-runner | grep -A 1 'VERSION:' | tr -d '\n' | awk '{print $2}'
+    changed_when: false
+    register: get_gitlab_runner_version
+
+  - name: Set installed_gitlab_runner fact
+    set_fact:
+      installed_gitlab_runner_version: "{{ get_gitlab_runner_version.stdout }}"
+
 - name: Install GitLab Runner v{{ gitlab_version }}
+  when: check_gitlab_runner is failed or
+        installed_gitlab_runner_version != gitlab_version
   apt:
     deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_version }}/deb/gitlab-runner_amd64.deb
     state: present
