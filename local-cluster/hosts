@@ -1,5 +1,5 @@
 [gitlab_hosts]
 gitlab
 
-[runners]
+[gitlab_runners]
 runner

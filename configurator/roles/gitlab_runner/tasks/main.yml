@@ -1,0 +1,5 @@
+---
+- name: Install GitLab Runner v{{ gitlab_version }}
+  apt:
+    deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_version }}/deb/gitlab-runner_amd64.deb
+    state: present

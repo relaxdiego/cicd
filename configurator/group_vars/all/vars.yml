@@ -8,6 +8,7 @@ common_admin_headers:
 
 # More options in configurator/roles/gitlab/defaults/main.yml
 gitlab_edition: "gitlab-ee"  # Allows us to upgrade from CE to EE seamlessly
+gitlab_version: "13.3.1"
 
 local_users: []
 

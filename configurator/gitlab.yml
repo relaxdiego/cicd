@@ -19,6 +19,16 @@
     - role: validator
       tags: validate
 
+- name: Install GitLab Runner
+  gather_facts: true
+  hosts: gitlab_runners
+  become: true
+
+  roles:
+    - role: gitlab_runner
+      tags:
+        - runner
+        - runners
 
 - name: Configure GitLab
   gather_facts: true
