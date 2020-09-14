@@ -63,10 +63,10 @@
   vars:
     user_id: "{{ user.id }}"
     user_username: "{{ user.username }}"
-    desired_ssh_pubkeys_uri: "{{ desired_user.ssh_pubkeys_uri }}"
+    desired_ssh_pubkeys_url: "{{ desired_user.ssh_pubkeys_url }}"
 
 - include: ensure-user-gpg-pubkeys.yml
   vars:
     user_id: "{{ user.id }}"
     user_username: "{{ user.username }}"
-    desired_gpg_pubkeys_uri: "{{ desired_user.gpg_pubkeys_uri }}"
+    desired_gpg_pubkeys_url: "{{ desired_user.gpg_pubkeys_url }}"

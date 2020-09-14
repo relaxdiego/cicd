@@ -16,9 +16,9 @@
     path: "{{ tmp_dir }}"
     state: directory
 
-- name: Get desired pubkeys from {{ desired_ssh_pubkeys_uri }}
+- name: Get desired pubkeys from {{ desired_ssh_pubkeys_url }}
   get_url:
-    url: "{{ desired_ssh_pubkeys_uri }}"
+    url: "{{ desired_ssh_pubkeys_url }}"
     dest: "{{ tmp_dir }}/{{ user_username }}-desired_ssh_pubkeys"
 
 - with_lines: cat {{ tmp_dir }}/{{ user_username }}-desired_ssh_pubkeys

@@ -45,15 +45,15 @@ local_users:
     admin:           true
     email:           "{{ vault_user_1_email }}"
     username:        "{{ vault_user_1_username}}"
-    ssh_pubkeys_uri: "{{ vault_user_1_ssh_pubkeys_uri }}"
-    gpg_pubkeys_uri: "{{ vault_user_1_gpg_pubkeys_uri }}"
+    ssh_pubkeys_url: "{{ vault_user_1_ssh_pubkeys_url }}"
+    gpg_pubkeys_url: "{{ vault_user_1_gpg_pubkeys_url }}"
 
-  - name:        "{{ vault_user_2_name }}"
-    admin:       true
-    email:       "{{ vault_user_2_email }}"
-    username:    "{{ vault_user_2_username}}"
-    ssh_pubkeys: "{{ vault_user_2_ssh_pubkeys }}"
-    gpg_pubkeys: "{{ vault_user_2_gpg_pubkeys }}"
+  - name:            "{{ vault_user_2_name }}"
+    admin:           true
+    email:           "{{ vault_user_2_email }}"
+    username:        "{{ vault_user_2_username}}"
+    ssh_pubkeys_url: "{{ vault_user_2_ssh_pubkeys_url }}"
+    gpg_pubkeys_url: "{{ vault_user_2_gpg_pubkeys_url }}"
 
 library:
   import_url: https://github.com/relaxdiego/cicd-library
