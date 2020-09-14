@@ -41,36 +41,30 @@ local_users:
   # directly as you wish.
 
   # User creation keys at https://docs.gitlab.com/ee/api/users.html#user-creation
+  - name:            "{{ vault_user_1_name }}"
+    admin:           true
+    email:           "{{ vault_user_1_email }}"
+    username:        "{{ vault_user_1_username}}"
+    ssh_pubkeys_uri: "{{ vault_user_1_ssh_pubkeys_uri }}"
+    gpg_pubkeys_uri: "{{ vault_user_1_gpg_pubkeys_uri }}"
 
-  - name: "{{ vault_user_1_name }}"
-    admin: true
-    email: "{{ vault_user_1_email }}"
-    username: "{{ vault_user_1_username}}"
-    # Pubkeys may be in the form of paths relative to the configdir or URLs
-    ssh_pubkeys:
-      - "{{ vault_user_1_ssh_pubkey }}"
-    gpg_pubkeys:
-      - "{{ vault_user_1_gpg_pubkey }}"
-
-  - name: "{{ vault_user_2_name }}"
-    admin: true
-    email: "{{ vault_user_2_email }}"
-    username: "{{ vault_user_2_username}}"
-    ssh_pubkeys:
-      - "{{ vault_user_2_ssh_pubkey }}"
-    gpg_pubkeys:
-      - "{{ vault_user_2_gpg_pubkey }}"
+  - name:        "{{ vault_user_2_name }}"
+    admin:       true
+    email:       "{{ vault_user_2_email }}"
+    username:    "{{ vault_user_2_username}}"
+    ssh_pubkeys: "{{ vault_user_2_ssh_pubkeys }}"
+    gpg_pubkeys: "{{ vault_user_2_gpg_pubkeys }}"
 
 library:
   import_url: https://github.com/relaxdiego/cicd-library
 
 projects:
-  - namespace: sample
-    name: app1
-    import_url: https://github.com/relaxdiego/cicd-sample-k8s-app
+  - namespace:     sample
+    name:          app1
     pipeline_type: kubernetes-application  # pipelines/kubernetes-applicaton.yml@cicd/library-live
+    import_url:    https://github.com/relaxdiego/cicd-sample-k8s-app
 
-  - namespace: sample
-    name: docker-image1
-    import_url: https://github.com/relaxdiego/cicd-sample-docker-image
-    pipeline_type: docker-image  # pipelines/docker-image.yml@cicd/library-live
+  - namespace:     sample
+    name:          base-container-image1
+    pipeline_type: base-container-image    # pipelines/base-container-image.yml@cicd/library-live
+    import_url:    https://github.com/relaxdiego/cicd-sample-base-container-image.git
