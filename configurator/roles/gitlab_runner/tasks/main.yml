@@ -19,11 +19,11 @@
     set_fact:
       installed_gitlab_runner_version: "{{ get_gitlab_runner_version.stdout }}"
 
-- name: Install GitLab Runner v{{ gitlab_version }}
+- name: Install GitLab Runner v{{ gitlab_runner_version }}
   when: check_gitlab_runner is failed or
-        installed_gitlab_runner_version != gitlab_version
+        installed_gitlab_runner_version != gitlab_runner_version
   apt:
-    deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_version }}/deb/gitlab-runner_amd64.deb
+    deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_runner_version }}/deb/gitlab-runner_amd64.deb
     state: present
 
 # TODO: Make this configurable via the vars.yml file or the inventory
