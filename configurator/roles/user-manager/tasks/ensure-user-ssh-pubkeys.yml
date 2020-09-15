@@ -24,8 +24,9 @@
 - with_lines: cat {{ tmp_dir }}/{{ user_username }}-desired_ssh_pubkeys
   loop_control:
     loop_var: desired_ssh_pubkey
-  when: desired_ssh_pubkey in (saved_pubkeys | selectattr('key') | list | first)
+  when: desired_ssh_pubkey not in (saved_pubkeys | selectattr('key') | list)
   name: Add SSH pubkey
+  changed_when: true
   uri:
     url: "{{ api_base_url }}/users/{{ user_id }}/keys"
     method: POST
