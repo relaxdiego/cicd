@@ -36,6 +36,8 @@ gitlab_extra_settings:
 
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
 
+# These are users registered to GitLab's local database. It will be mutually
+# exclusive with omniauth_users and ldap_users once those are supported
 local_users:
   # Placing the values in vault.yml is optional. You can place it here
   # directly as you wish.
@@ -49,7 +51,7 @@ local_users:
     gpg_pubkeys_url: "{{ vault_user_1_gpg_pubkeys_url }}"
 
   - name:            "{{ vault_user_2_name }}"
-    admin:           true
+    admin:           false
     email:           "{{ vault_user_2_email }}"
     username:        "{{ vault_user_2_username}}"
     ssh_pubkeys_url: "{{ vault_user_2_ssh_pubkeys_url }}"
@@ -63,8 +65,16 @@ projects:
     name:          app1
     pipeline_type: kubernetes-application  # pipelines/kubernetes-applicaton.yml@cicd/library-live
     import_url:    https://github.com/relaxdiego/cicd-sample-k8s-app
+    admins:
+      - "{{ vault_user_1_username }}"
+    reviewers:
+      - "{{ vault_user_2_username }}"
 
   - namespace:     sample
     name:          base-container-image1
     pipeline_type: base-container-image    # pipelines/base-container-image.yml@cicd/library-live
     import_url:    https://github.com/relaxdiego/cicd-sample-base-container-image.git
+    admins:
+      - "{{ vault_user_1_username }}"
+    viewers:
+      - "{{ vault_user_2_username }}"
