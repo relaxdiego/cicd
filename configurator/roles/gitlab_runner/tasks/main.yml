@@ -25,3 +25,51 @@
   apt:
     deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_version }}/deb/gitlab-runner_amd64.deb
     state: present
+
+# TODO: Make this configurable via the vars.yml file or the inventory
+- name: Set desired_runners fact
+  set_fact:
+    desired_runners:
+    - description: shell-runner
+      executor: shell
+      shell: bash
+
+# Feels hacky
+- name: Get configured runners in host
+  shell: gitlab-runner list 2>&1 | awk 'NR>2{ print $1 }'
+  changed_when: false
+  register: list_configured_runners
+
+- name: Set registered_runner_names and desired_runner_names facts
+  set_fact:
+    registered_runner_names: "{{ list_configured_runners.stdout_lines }}"
+    desired_runner_names: "{{ desired_runners | map(attribute='description') | list }}"
+
+# Adapted from https://stackoverflow.com/a/57547905/402145
+- when: not desired_runner_names is subset(registered_runner_names)
+  block:
+  - name: Get registration token
+    when: groups['gitlab_hosts'] | length > 0
+    delegate_to: "{{ groups['gitlab_hosts'][0] }}"
+    become: true
+    command: 'gitlab-rails runner -e production "puts Gitlab::CurrentSettings.current_application_settings.runners_registration_token"'
+    changed_when: false
+    register: get_registration_token
+
+  - name: Set registration_token fact
+    set_fact:
+      registration_token: '{{ get_registration_token.stdout }}'
+
+- with_items: "{{ desired_runners }}"
+  when: item.description not in registered_runner_names
+  name: Register shell runner
+  # TODO: Make this flexible enough to convert all of the keys in {{ item }}
+  #       into arguments for the `gitlab-runner register` command below.
+  command: >
+    gitlab-runner register
+      --non-interactive
+      --url "{{ gitlab_external_url }}"
+      --registration-token='{{ registration_token }}'
+      --description='{{ item.description }}'
+      --executor={{ item.executor }}
+      --shell={{ item.shell }}
