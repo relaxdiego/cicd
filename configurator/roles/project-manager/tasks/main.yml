@@ -8,13 +8,14 @@
   # tested before it goes to the live repo
   - namespace: cicd
     name: library-dev
-    import_url: https://github.com/relaxdiego/cicd-library
+    import_url: "{{ library.import_url }}"
 
   # Changes that have passed the shared library's pipeline are pushed
   # here and will then be available for use by the projects defined
   # further down this YAML file
   - namespace: cicd
     name: library
+    import_url: "{{ library.import_url }}"
     pipeline_type: disabled
     forking_access_level: disabled
     issues_access_level: disabled
