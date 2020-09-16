@@ -1,8 +1,8 @@
 .make-flag*
 .tmp
-local-cluster/.vagrant
-local-cluster/*.log
-local-cluster/vars.yml
-local-cluster/vault.yml
+examples/vagrant-*/.vagrant
+examples/vagrant-*/*.log
+examples/vagrant-*/vars.yml
+examples/vagrant-*/vault.yml
 output
 packer_cache

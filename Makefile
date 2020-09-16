@@ -11,12 +11,6 @@
 ##                           If you want to configure your local cluster, there's a
 ##                           convenience goal that you can call instead: `make local-cluster`.
 ##
-##                           Note that, unlike its local-cluster counterpart, this goal does
-##                           not check if the cluster has already been instantiated or not since
-##                           it has no way of knowing what tool will be used for the instantiation
-##                           mechanism. Thus, that responsibility is delegated to
-##                           ${configdir}/hooks/instantiate-cluster.
-##
 .PHONY: cluster
 cluster :
 	@configdir=${configdir} scripts/instantiate-cluster
@@ -45,37 +39,8 @@ cluster-implode :
 ##                           convenience goal that you can call instead: `make local-gitlab`
 ##
 .PHONY: gitlab
-gitlab :
+gitlab : cluster
 	@configdir=$(configdir) tags=${tags} verbose=${verbose} scripts/configure
-
-##   local-cluster         : Instantiates a local cluster for development purposes
-##
-.PHONY: local-cluster
-local-cluster : .make-flag-local-cluster-created
-.make-flag-local-cluster-created :
-	@configdir=local-cluster/ scripts/instantiate-cluster
-	touch .make-flag-local-cluster-created
-
-##   local-cluster-implode : Destroys the local cluster
-##
-.PHONY: local-cluster-implode
-local-cluster-implode :
-	@configdir=local-cluster/ scripts/implode-cluster
-	rm -vf .make-flag-local-cluster-created
-
-##   local-gitlab          : Configures the local cluster to run GitLab. Same as running
-##                           `make gitlab configdir=./local-cluster`
-##
-.PHONY: local-gitlab
-local-gitlab : local-cluster
-	make gitlab configdir=./local-cluster tags=${tags}
-
-##   local-vault-edits     : Edit the Ansible vault file of the local cluster
-##                           Same as running `make vault-edits configdir=./local-cluster`
-##
-.PHONY: local-vault-edits
-local-vault-edits :
-	make vault-edits configdir=local-cluster
 
 ##   vault-edits           : Edit the Ansible vault file of $configdir. Example:
 ##

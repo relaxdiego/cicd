@@ -23,6 +23,8 @@ Basically, what I intend to do with the above is that you should be able
 to define your cluster's config in a separate, non-public repo which
 you can feed to this project so that it can configure your GitLab cluster.
 
+For example configdirs, see the `examples/` directory.
+
 For more Make goals, run `make help`
 
 
@@ -62,11 +64,11 @@ pip install certifi
 
 ### Instantiate a Local Cluster
 
-To facilitate a faster development workflow, we will instantiate a
+To facilitate a faster development workflow, we can instantiate a
 dev cluster locally using Vagrant.
 
 ```
-make local-gitlab
+make gitlab configdir=examples/vagrant-vmware
 ```
 
 Once provisioning has completed, you should now be able to ssh to your
@@ -89,7 +91,7 @@ curl -L http://gitlab.localdev
 When you're done and want to remove the local cluster, run:
 
 ```
-make local-cluster-implode
+make cluster-implode configdir=examples/vagrant-vmware
 ```
 
 

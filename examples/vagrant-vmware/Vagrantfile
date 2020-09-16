@@ -12,7 +12,7 @@
 #
 #       0. Ensure VMware Desktop/Fusion is closed
 #       1. make local-cluster-implode
-#       2. rm -rf .local-cluster/.vagrant
+#       2. rm -rf examples/vagrant-vmware/.vagrant
 #       3. Remove the corresponding port entry in /Library/Preferences/VMWare\ Fusion/networking
 #       4. Remove the corresponding port entry in /Library/Preferences/VMWare\ Fusion/vmnet8/nat.conf
 #       5. sudo rm -f /opt/vagrant-vmware-desktop/settings/nat.json
