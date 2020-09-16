@@ -1,6 +1,7 @@
 #!/usr/bin/env bash -e
 cd $configdir
 source lib/environment
+[ -f "${cluster_created_flag}" ] && exit 0
 vagrant up
 
 #
@@ -37,3 +38,5 @@ echo
 
 sudo bash -c "sed -i \"/$local_cluster_etc_hosts_marker_start/,/$local_cluster_etc_hosts_marker_end/ d\" /etc/hosts; echo \"${etc_hosts_entries}\" >> /etc/hosts"
 echo "Static entries added to your /etc/hosts"
+
+touch "${cluster_created_flag}"

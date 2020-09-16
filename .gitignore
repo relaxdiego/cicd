@@ -1,3 +1,4 @@
+.*-flag
 .make-flag*
 .tmp
 examples/vagrant-*/.vagrant

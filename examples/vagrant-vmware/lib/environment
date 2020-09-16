@@ -13,3 +13,5 @@ export local_cluster_ssh_config_marker_end="# === CICD_LOCAL_CLUSTER_SSH_CONFIG_
 
 export local_cluster_etc_hosts_marker_start="# === CICD_LOCAL_CLUSTER_HOSTS_BEGIN ==="
 export local_cluster_etc_hosts_marker_end="# ===  CICD_LOCAL_CLUSTER_HOSTS_END  ==="
+
+export cluster_created_flag=${configdir}/.cluster-created-flag
