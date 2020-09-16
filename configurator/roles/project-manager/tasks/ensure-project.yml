@@ -54,6 +54,18 @@
     set_fact:
       namespace: "{{ namespace_matches | first }}"
 
+# TODO: This needs to be moved to an ensure-group.yml file
+- name: Ensure {{ namespace.name }} group attributes
+  when: namespace.kind is defined and namespace.kind == 'group'
+  uri:
+    url: "{{ api_base_url }}/groups/{{ namespace.id }}"
+    method: PUT
+    headers:
+      "{{ common_admin_headers }}"
+    body: >-
+      visibility={{ group_defaults.visibility }}
+    status_code: [200, 201]
+
 - name: Set fact is_new_namespace
   set_fact:
     is_new_namespace: "{{ namespace_matches | length == 0 }}"
@@ -145,7 +157,8 @@
       pages_access_level={{ desired_project.pages_access_level | default(project_defaults.pages_access_level) }}&
       repository_access_level={{ desired_project.repository_access_level | default(project_defaults.repository_access_level) }}&
       snippets_access_level={{ desired_project.snippets_access_level | default(project_defaults.snippets_access_level) }}&
-      wiki_access_level={{ desired_project.wiki_access_level | default(project_defaults.wiki_access_level) }}
+      wiki_access_level={{ desired_project.wiki_access_level | default(project_defaults.wiki_access_level) }}&
+      visibility={{ desired_project.visibility | default(project_defaults.visibility) }}
 
 - name: Append shared library path to ensure_project_attributes_body
   set_fact:

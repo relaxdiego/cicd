@@ -13,6 +13,11 @@ gitlab_runner_version: "13.3.1"
 
 local_users: []
 
+# Group defaults. No way to override these yet. For this to be possible,
+# we should allow for vars.yml to define groups and their attributes
+group_defaults:
+  visibility: internal
+
 #
 # Project defaults. Override these keys when defining your projects in your
 # configdir's vars.yml file.
@@ -32,3 +37,4 @@ project_defaults:
   repository_access_level: enabled
   snippets_access_level: disabled
   wiki_access_level: disabled
+  visibility: internal
