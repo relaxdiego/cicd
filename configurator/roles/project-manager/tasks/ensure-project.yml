@@ -26,7 +26,8 @@
         "{{ common_admin_headers }}"
       body: >-
         name={{ desired_project.namespace }}&
-        path={{ desired_project.namespace }}
+        path={{ desired_project.namespace }}&
+        visibility={{ group_defaults.visibility }}
       status_code: [200, 201]
     register: create_group
 
