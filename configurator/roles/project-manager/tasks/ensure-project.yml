@@ -1,9 +1,4 @@
 ---
-- when: desired_project.pipeline_type is not defined
-  name: Fail if 'pipeline_type' is not defined
-  fail:
-    msg: pipeline_type field is not defined in project config
-
 - name: Check if namespace '{{ desired_project.namespace }}' exists
   uri:
     url: "{{ api_base_url }}/namespaces?search={{ desired_project.namespace }}"
@@ -89,28 +84,18 @@
     set_fact:
       project_matches: "{{ check_project.json }}"
 
-  - when: project_matches | length == 1
+  - debug:
+      msg: "{{ project_matches | selectattr('path_with_namespace', 'eq', path_with_namespace) | list | length == 1 }}"
+      verbosity: 2
+
+  - when: project_matches | selectattr('path_with_namespace', 'eq', path_with_namespace) | list | length == 1
     name: Set project fact to only match
     set_fact:
-      project: "{{ project_matches | first }}"
-
-  - when: project_matches | length > 1
-    block:
-    - debug:
-        msg: Multiple matches for project '{{ path_with_namespace }}' found
-
-    - name: Fail if no exact match for namespace path '{{ path_with_namespace }}'
-      fail:
-        msg: No exact match found for namespace '{{ path_with_namespace }}'
-      when: project_matches | selectattr('path', 'eq', path_with_namespace) | list | length == 0
-
-    - name: Set project fact to exact match path
-      set_fact:
-        project: "{{ project_matches | selectattr('path', 'eq', path_with_namespace) | list | first }}"
+      project: "{{ project_matches | selectattr('path_with_namespace', 'eq', path_with_namespace) | list | first }}"
 
   - name: Set project_found fact
     set_fact:
-      project_found: "{{ project_matches | length != 0 }}"
+      project_found: "{{ project_matches | selectattr('path_with_namespace', 'eq', path_with_namespace) | list | length == 1 }}"
 
 - when: is_new_namespace or not project_found
   block:
@@ -130,6 +115,7 @@
       body: "{{ create_body }}"
       status_code: [200, 201]
     register: create_project
+    changed_when: true
 
   - name: Set project fact to newly created project '{{ path_with_namespace }}'
     set_fact:
@@ -161,27 +147,20 @@
       wiki_access_level={{ desired_project.wiki_access_level | default(project_defaults.wiki_access_level) }}&
       visibility={{ desired_project.visibility | default(project_defaults.visibility) }}
 
-- name: Append shared library path to ensure_project_attributes_body
-  set_fact:
-    ensure_project_attributes_body: >-
-      {{ ensure_project_attributes_body }}&
-      ci_config_path=pipelines/{{ desired_project.pipeline_type }}.yml@cicd/library-live
-  when: desired_project.pipeline_type != 'custom'
-
-- name: Append .gitlab-ci.yml path to ensure_project_attributes_body
-  set_fact:
-    ensure_project_attributes_body: >-
-      {{ ensure_project_attributes_body }}&
-      ci_config_path=.gitlab-ci.yml
-  when: desired_project.pipeline_type == 'custom'
-
 # Disables CI/CD for project
 - name: Append builds_access_level=disabled to ensure_project_attributes_body
   set_fact:
     ensure_project_attributes_body: >-
       {{ ensure_project_attributes_body }}&
       builds_access_level=disabled
-  when: desired_project.pipeline_type == 'disabled'
+  when: (desired_project.pipeline_type | default('')) == 'disabled'
+
+- name: Append .gitlab-ci.yml path to ensure_project_attributes_body
+  set_fact:
+    ensure_project_attributes_body: >-
+      {{ ensure_project_attributes_body }}&
+      ci_config_path=.gitlab-ci.yml
+  when: (desired_project.pipeline_type | default('')) != 'disabled'
 
 - name: Ensure '{{ path_with_namespace }}' attributes
   uri:

@@ -63,7 +63,6 @@ library:
 projects:
   - namespace:     sample
     name:          app1
-    pipeline_type: kubernetes-application  # pipelines/kubernetes-applicaton.yml@cicd/library-live
     import_url:    https://github.com/relaxdiego/cicd-sample-k8s-app
     admins:
       - "{{ vault_user_1_username }}"
@@ -72,7 +71,6 @@ projects:
 
   - namespace:     sample
     name:          base-container-image1
-    pipeline_type: base-container-image    # pipelines/base-container-image.yml@cicd/library-live
     import_url:    https://github.com/relaxdiego/cicd-sample-base-container-image.git
     admins:
       - "{{ vault_user_1_username }}"
