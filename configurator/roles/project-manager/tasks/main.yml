@@ -16,7 +16,7 @@
   - namespace: cicd
     name: library
     import_url: "{{ library.import_url }}"
-    pipeline_type: disabled
+    builds_access_level: disabled
     forking_access_level: disabled
     issues_access_level: disabled
     merge_requests_access_level: disabled

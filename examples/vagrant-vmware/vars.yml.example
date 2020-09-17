@@ -61,18 +61,11 @@ library:
   import_url: https://github.com/relaxdiego/cicd-library
 
 projects:
-  - namespace:     sample
-    name:          app1
-    import_url:    https://github.com/relaxdiego/cicd-sample-k8s-app
-    admins:
-      - "{{ vault_user_1_username }}"
-    reviewers:
-      - "{{ vault_user_2_username }}"
+  - namespace:      sample
+    name:           app1
+    import_url:     https://github.com/relaxdiego/cicd-sample-k8s-app
 
-  - namespace:     sample
-    name:          base-container-image1
-    import_url:    https://github.com/relaxdiego/cicd-sample-base-container-image.git
-    admins:
-      - "{{ vault_user_1_username }}"
-    viewers:
-      - "{{ vault_user_2_username }}"
+  - namespace:      sample
+    name:           base-container-image1
+    import_url:     https://github.com/relaxdiego/cicd-sample-base-container-image.git
+    ci_config_path: .cicd.yml

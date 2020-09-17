@@ -131,6 +131,8 @@
     ensure_project_attributes_body: >-
       auto_cancel_pending_pipelines={{ desired_project.auto_cancel_pending_pipelines | default(project_defaults.auto_cancel_pending_pipelines) }}&
       auto_devops_enabled={{ desired_project.auto_devops_enabled | default(project_defaults.auto_devops_enabled) }}&
+      builds_access_level={{ desired_project.builds_access_level | default(project_defaults.builds_access_level) }}&
+      ci_config_path={{ desired_project.ci_config_path | default(project_defaults.ci_config_path) }}&
       container_registry_enabled={{ desired_project.container_registry_enabled | default(project_defaults.container_registry_enabled) }}&
       forking_access_level={{ desired_project.forking_access_level | default(project_defaults.forking_access_level) }}&
       issues_access_level={{ desired_project.issues_access_level | default(project_defaults.issues_access_level) }}&
@@ -142,21 +144,6 @@
       snippets_access_level={{ desired_project.snippets_access_level | default(project_defaults.snippets_access_level) }}&
       wiki_access_level={{ desired_project.wiki_access_level | default(project_defaults.wiki_access_level) }}&
       visibility={{ desired_project.visibility | default(project_defaults.visibility) }}
-
-# Disables CI/CD for project
-- name: Append builds_access_level=disabled to ensure_project_attributes_body
-  set_fact:
-    ensure_project_attributes_body: >-
-      {{ ensure_project_attributes_body }}&
-      builds_access_level=disabled
-  when: (desired_project.pipeline_type | default('')) == 'disabled'
-
-- name: Append .gitlab-ci.yml path to ensure_project_attributes_body
-  set_fact:
-    ensure_project_attributes_body: >-
-      {{ ensure_project_attributes_body }}&
-      ci_config_path=.gitlab-ci.yml
-  when: (desired_project.pipeline_type | default('')) != 'disabled'
 
 - name: Ensure '{{ path_with_namespace }}' attributes
   uri:

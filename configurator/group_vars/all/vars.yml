@@ -26,6 +26,8 @@ group_defaults:
 project_defaults:
   auto_cancel_pending_pipelines: enabled
   auto_devops_enabled: 'false'
+  builds_access_level: enabled
+  ci_config_path: '.gitlab-ci.yml'
   container_registry_enabled: 'false'
   forking_access_level: enabled
   import_url: ''
