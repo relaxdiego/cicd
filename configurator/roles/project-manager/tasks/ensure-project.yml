@@ -84,7 +84,7 @@
     set_fact:
       project_matches: "{{ check_project.json | selectattr('path_with_namespace', 'eq', path_with_namespace) | list }}"
 
-  - name: Set project fact
+  - name: Set project_found fact
     set_fact:
       project_found: "{{ project_matches | length == 1 }}"
 
