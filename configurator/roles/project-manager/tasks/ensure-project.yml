@@ -89,7 +89,7 @@
       project_found: "{{ project_matches | length == 1 }}"
 
   - name: Set project fact
-    when: "{{ project_found }}"
+    when: project_found
     set_fact:
       project: "{{ project_matches | first }}"
 
