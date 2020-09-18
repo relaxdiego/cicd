@@ -43,7 +43,7 @@ modifications.
 * [VMware Fusion](https://www.vmware.com/asean/products/fusion.html)
 * [sshpass](https://gist.github.com/relaxdiego/f2e09f72e9a54b2262c6acfcd40f7b55)
 
-#### Special Case for macOS
+#### Special Consideration for macOS
 
 Make sure you install the GNU versions of sed and grep since the BSD versions
 that come with macOS have different interfaces:
