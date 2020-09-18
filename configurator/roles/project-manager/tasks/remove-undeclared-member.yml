@@ -1,0 +1,32 @@
+---
+- when: project_member.username not in declared_member_usernames
+  block:
+  - name: Get user '{{ project_member.username }}'
+    uri:
+      url: '{{ api_base_url }}/users?username={{ project_member.username }}'
+      headers:
+        '{{ common_admin_headers }}'
+      status_code: [200]
+    register: get_user
+
+  - name: Set user_matches fact
+    set_fact:
+      user_matches: '{{ get_user.json }}'
+
+  - name: Fail if user does not exist
+    fail:
+      msg: User '{{ project_member.username }}' does not exist!
+    when: user_matches | length == 0
+
+  - name: Set user_to_remove fact
+    set_fact:
+      user_to_remove: "{{ user_matches | first }}"
+
+  - name: Remove '{{ project_member.username }}' from project '{{ project.path_with_namespace }}'
+    uri:
+      url: "{{ api_base_url }}/projects/{{ project.id }}/members/{{ user_to_remove.id }}"
+      method: DELETE
+      headers:
+        "{{ common_admin_headers }}"
+      status_code: [200, 204]
+    changed_when: true

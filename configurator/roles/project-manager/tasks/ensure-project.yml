@@ -154,7 +154,35 @@
     body: "{{ ensure_project_attributes_body }}"
     status_code: [200, 201]
 
+- name: Set desired_project_members fact
+  set_fact:
+    desired_project_members: "{{ desired_project.members | default(project_defaults.members) }}"
+
 - include: ensure-member.yml
-  with_items: "{{ desired_project.members | default(project_defaults.members) }}"
+  with_items: "{{ desired_project_members }}"
   loop_control:
     loop_var: desired_member
+
+# Remove undeclared members
+- name: Get all members of '{{ project.path_with_namespace }}'
+  uri:
+    url: "{{ api_base_url }}/projects/{{ project.id }}/members"
+    method: GET
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200, 201]
+  register: get_members_result
+
+- name: Set project_members fact
+  set_fact:
+    project_members: "{{ get_members_result.json }}"
+
+- name: Set declared_member_usernames fact
+  set_fact:
+    declared_member_usernames: "{{ desired_project_members | map(attribute='username') | list }}"
+
+- name: Remove undeclared member
+  include: remove-undeclared-member.yml
+  with_items: "{{ project_members }}"
+  loop_control:
+    loop_var: project_member
