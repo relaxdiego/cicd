@@ -10,12 +10,19 @@
   tags:
     - prebake
 
+- name: Check if GitLab is already installed.
+  stat: path=/usr/bin/gitlab-ctl
+  register: gitlab_file
+  tags:
+    - prebake
+
 - name: Check if GitLab deb files already cached
   shell: ls -1 "{{ gitlab_cache_local_dir }}"
   delegate_to: 127.0.0.1
   become: false
   changed_when: false
   register: cached_deb_files
+  when: not gitlab_file.stat.exists
   tags:
     - prebake
 
@@ -24,12 +31,7 @@
     src: "{{ gitlab_cache_local_dir }}/{{ item }}"
     dest: "{{ gitlab_cache_remote_dir }}/{{item}}"
   with_items: "{{ cached_deb_files.stdout_lines }}"
-  tags:
-    - prebake
-
-- name: Check if GitLab is already installed.
-  stat: path=/usr/bin/gitlab-ctl
-  register: gitlab_file
+  when: not gitlab_file.stat.exists
   tags:
     - prebake
 
@@ -177,6 +179,7 @@
     src: "{{ item }}"
     dest: "{{ gitlab_cache_local_dir }}/"
     flat: true
+  when: not gitlab_file.stat.exists
   with_items: "{{ deb_files.stdout_lines }}"
 
 - meta: flush_handlers
