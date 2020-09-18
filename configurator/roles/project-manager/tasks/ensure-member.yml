@@ -83,7 +83,8 @@
       membership: "{{ add_member_result.json }}"
 
 # Update the user with the correct access level if yes
-- when: is_member
+- when: is_member and
+        membership.access_level != access_levels[desired_member.access_level]
   block:
   - name: Update '{{ user.username }}' membership in '{{ project.path_with_namespace }}'
     uri:
@@ -96,6 +97,7 @@
         access_level={{ access_levels[desired_member.access_level] }}
       status_code: [200, 201]
     register: update_member_result
+    changed_when: true
 
   - name: Set membership fact
     set_fact:
