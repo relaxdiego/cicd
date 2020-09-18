@@ -1,0 +1,102 @@
+---
+# https://docs.gitlab.com/ee/api/members.html
+- name: Set access_levels fact
+  set_fact:
+    access_levels:
+      no_access:   0
+      guest:      10
+      reporter:   20
+      developer:  30
+      maintainer: 40
+      owner:      50
+
+# Get user
+- name: Get user '{{ desired_member.username }}'
+  uri:
+    url: '{{ api_base_url }}/users?username={{ desired_member.username }}'
+    headers:
+      '{{ common_admin_headers }}'
+    status_code: [200]
+  register: get_user
+
+- name: Set user_matches fact
+  set_fact:
+    user_matches: '{{ get_user.json }}'
+
+- name: Fail if user does not exist
+  fail:
+    msg: User '{{ desired_member.username }}' does not exist!
+  when: user_matches | length == 0
+
+- name: Set user fact
+  set_fact:
+    user: '{{ user_matches | first }}'
+
+- name: Fail if access_level is invalid
+  fail:
+    msg: Access Level '{{ desired_member.access_level }}' is invalid!
+         Valid values are {{ access_levels.keys() | list }}. See
+         https://docs.gitlab.com/ee/user/permissions.html#project-members-permissions
+         for more information.
+  when: desired_member.access_level not in access_levels
+
+# Check if user is a member of the project
+- name: Check if '{{ desired_member.username }}' is a member of '{{ project.path_with_namespace }}'
+  uri:
+    url: "{{ api_base_url }}/projects/{{ project.id }}/members?user_ids={{ user.id }}"
+    method: GET
+    headers:
+      "{{ common_admin_headers }}"
+    status_code: [200, 201]
+  register: check_membership
+
+- name: Set member_matches fact
+  set_fact:
+    member_matches: "{{ check_membership.json }}"
+
+- name: Set is_member fact
+  set_fact:
+    is_member: "{{ member_matches | length == 1 }}"
+
+- name: Set membership fact
+  set_fact:
+    membership: "{{ member_matches | first }}"
+  when: is_member
+
+# Add the user as a member with the correct access level if not
+- when: not is_member
+  block:
+  - name: Add '{{ user.username }}' as '{{ desired_member.access_level }}' in '{{ project.path_with_namespace }}'
+    uri:
+      url: "{{ api_base_url }}/projects/{{ project.id }}/members"
+      method: POST
+      headers:
+        "{{ common_admin_headers }}"
+      body: >-
+        user_id={{ user.id }}&
+        access_level={{ access_levels[desired_member.access_level] }}
+      status_code: [200, 201]
+    register: add_member_result
+
+  - name: Set membership fact
+    set_fact:
+      membership: "{{ add_member_result.json }}"
+
+# Update the user with the correct access level if yes
+- when: is_member
+  block:
+  - name: Update '{{ user.username }}' membership in '{{ project.path_with_namespace }}'
+    uri:
+      url: "{{ api_base_url }}/projects/{{ project.id }}/members/{{ user.id }}"
+      method: PUT
+      headers:
+        "{{ common_admin_headers }}"
+      body: >-
+        user_id={{ user.id }}&
+        access_level={{ access_levels[desired_member.access_level] }}
+      status_code: [200, 201]
+    register: update_member_result
+
+  - name: Set membership fact
+    set_fact:
+      membership: "{{ update_member_result.json }}"

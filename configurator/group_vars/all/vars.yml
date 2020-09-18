@@ -40,3 +40,5 @@ project_defaults:
   snippets_access_level: disabled
   wiki_access_level: disabled
   visibility: internal
+  # https://docs.gitlab.com/ee/api/members.html
+  members: []

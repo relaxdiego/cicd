@@ -153,3 +153,8 @@
       "{{ common_admin_headers }}"
     body: "{{ ensure_project_attributes_body }}"
     status_code: [200, 201]
+
+- include: ensure-member.yml
+  with_items: "{{ desired_project.members | default(project_defaults.members) }}"
+  loop_control:
+    loop_var: desired_member
