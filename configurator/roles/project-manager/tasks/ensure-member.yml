@@ -8,7 +8,6 @@
       reporter:   20
       developer:  30
       maintainer: 40
-      owner:      50
 
 # Get user
 - name: Get user '{{ desired_member.username }}'
