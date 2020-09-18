@@ -66,6 +66,10 @@ projects:
   - namespace:      sample
     name:           app1
     import_url:     https://github.com/relaxdiego/cicd-sample-k8s-app
+    # https://docs.gitlab.com/ee/api/members.html
+    members:
+      - username:     "{{ vault_user_1_username }}"
+        access_level: developer
 
   - namespace:      sample
     name:           base-container-image1
