@@ -60,6 +60,12 @@
     set_fact:
       registration_token: '{{ get_registration_token.stdout }}'
 
+# https://docs.gitlab.com/runner/faq/README.html#job-failed-system-failure-preparing-environment
+- name: Ensure /home/gitlab-runner/.bash_logout does not exist
+  file:
+    path: /home/gitlab-runner/.bash_logout
+    state: absent
+
 - with_items: "{{ desired_runners }}"
   when: item.description not in registered_runner_names
   name: Register shell runner
