@@ -34,7 +34,7 @@ vault_password_path=$(scripts/get_vault_password_path "${cluster_id}")
 vault_file="${configdir}/vault.yml"
 
 [ ! -z "${tags}" ] && tags_arg="--tags ${tags}"
-[ ! -z "${verbose}" ] && verbosity_arg="-${verbose}"
+[ ! -z "${verbosity}" ] && verbosity_arg="-${verbosity}"
 
 cd configurator
 set -x

@@ -40,7 +40,7 @@ cluster-implode :
 ##
 .PHONY: gitlab
 gitlab : cluster
-	@configdir=$(configdir) tags=${tags} verbose=${verbose} scripts/configure
+	@configdir=$(configdir) tags=${tags} verbosity=${verbosity} scripts/configure
 
 ##   vault-edits           : Edit the Ansible vault file of $configdir. Example:
 ##
