@@ -6,15 +6,15 @@
   with_items:
   # This is where changes to the shared library will be merged and
   # tested before it goes to the live repo
-  - namespace: cicd
-    name: library-dev
+  - namespace: "{{ library.namespace | default('cicd') }}"
+    name: "{{ library.name | default('library') }}-dev"
     import_url: "{{ library.import_url }}"
 
   # Changes that have passed the shared library's pipeline are pushed
   # here and will then be available for use by the projects defined
   # further down this YAML file
-  - namespace: cicd
-    name: library
+  - namespace: "{{ library.namespace | default('cicd') }}"
+    name: "{{ library.name | default('library') }}"
     import_url: "{{ library.import_url }}"
     builds_access_level: disabled
     forking_access_level: disabled

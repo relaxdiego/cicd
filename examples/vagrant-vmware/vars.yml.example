@@ -58,6 +58,8 @@ local_users:
     gpg_pubkeys_url: "{{ vault_user_2_gpg_pubkeys_url }}"
 
 library:
+  namespace:  relaxdiego
+  name:       library
   import_url: https://github.com/relaxdiego/cicd-library
 
 projects:
