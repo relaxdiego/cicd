@@ -9,6 +9,7 @@
   - namespace: "{{ library.namespace | default('cicd') }}"
     name: "{{ library.name | default('library') }}-dev"
     import_url: "{{ library.import_url }}"
+    members: "{{ library.members | default([]) }}"
 
   # Changes that have passed the shared library's pipeline are pushed
   # here and will then be available for use by the projects defined
@@ -16,6 +17,9 @@
   - namespace: "{{ library.namespace | default('cicd') }}"
     name: "{{ library.name | default('library') }}"
     import_url: "{{ library.import_url }}"
+    # Nobody should have direct access to the live library. Only the
+    # CI job in its dev counterpart should be able to push to it.
+    members: []
     builds_access_level: disabled
     forking_access_level: disabled
     issues_access_level: disabled
