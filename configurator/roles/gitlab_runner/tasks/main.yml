@@ -1,4 +1,10 @@
 ---
+# TODO: Configure the runner to run inside a docker container with access
+#       to the Docker socket in the host so that we can build Docker containers
+#       without resorting to the really ugly Docker-in-Docker magic.
+#       See:
+#         1. https://docs.gitlab.com/runner/install/docker.html
+#         2. http://jpetazzo.github.io/2015/09/03/do-not-use-docker-in-docker-for-ci/#:~:text=The%20primary%20purpose%20of%20Docker,into%20your%20Jenkins%20container%20instead.
 - name: Check if GitLab Runner is already running
   systemd:
     name: gitlab-runner
