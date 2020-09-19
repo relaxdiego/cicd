@@ -1,0 +1,9 @@
+---
+# TODO: Use DNS-01 challenge/response method so that we can still get
+#       Lets Encrypt certs for private installations using split-brain DNS.
+#       Once the certs are setup, additional configuration changes must
+#       be made to GitLab so that it knows where the certs are. Useful
+#       for enabling the registry which is the whole point of this role.
+#       At least initially.
+#
+#       See: https://docs.gitlab.com/ee/administration/packages/container_registry.html#configure-container-registry-under-an-existing-gitlab-domain
