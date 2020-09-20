@@ -1,0 +1,9 @@
+[gitlab_hosts]
+my-gitlab-machine
+
+[gitlab_runners]
+my-gitlab-runner-1
+
+[all:children]
+gitlab_hosts
+gitlab_runners

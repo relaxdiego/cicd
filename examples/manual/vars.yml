@@ -1,0 +1,67 @@
+---
+# More options in configurator/roles/gitlab/defaults/main.yml
+gitlab_external_url: http://gitlab.localdev
+
+# smtp settings are define further below
+gitlab_email_enabled: "true"
+gitlab_email_from: "{{ vault_smtp_username }}"
+gitlab_email_display_name: "gitlab.localdev"
+gitlab_email_reply_to: "{{ vault_smtp_username }}"
+
+gitlab_extra_settings:
+  - gitlab_rails:
+    - key: initial_root_password
+      value: "{{ vault_gitlab_initial_root_password }}"
+
+    - key: smtp_enable
+      value: "true"
+    - key: smtp_address
+      value: smtp.gmail.com
+    - key: smtp_port
+      value: 465
+    - key: smtp_user_name
+      value: "{{ vault_smtp_username }}"
+    - key: smtp_password
+      value: "{{ vault_smtp_password }}"
+    - key: smtp_domain
+      value: smtp.gmail.com
+    - key: smtp_authentication
+      value: login
+    - key: smtp_enable_starttls_auto
+      value: "true"
+    - key: smtp_tls
+      value: "true"
+    - key: smtp_openssl_verify_mode
+      value: peer
+
+gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
+
+# These are users registered to GitLab's local database. It will be mutually
+# exclusive with omniauth_users and ldap_users once those are supported
+local_users:
+  # Placing the values in vault.yml is optional. You can place it here
+  # directly as you wish.
+
+  # User creation keys at https://docs.gitlab.com/ee/api/users.html#user-creation
+  - name:            "{{ vault_user_1_name }}"
+    admin:           true
+    email:           "{{ vault_user_1_email }}"
+    username:        "{{ vault_user_1_username}}"
+    ssh_pubkeys_url: "{{ vault_user_1_ssh_pubkeys_url }}"
+    gpg_pubkeys_url: "{{ vault_user_1_gpg_pubkeys_url }}"
+
+projects:
+  - namespace:  relaxdiego
+    name:       cicd-library
+    import_url: https://github.com/relaxdiego/cicd-library
+    members:
+      - username:     "{{ vault_user_1_username }}"
+        access_level: developer
+
+  - namespace:   sample
+    name:        base-container-image1
+    import_url: https://github.com/relaxdiego/cicd-sample-base-container-image.git
+    # https://docs.gitlab.com/ee/api/members.html
+    members:
+      - username:     "{{ vault_user_1_username }}"
+        access_level: developer
