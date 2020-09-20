@@ -57,15 +57,17 @@ local_users:
     ssh_pubkeys_url: "{{ vault_user_2_ssh_pubkeys_url }}"
     gpg_pubkeys_url: "{{ vault_user_2_gpg_pubkeys_url }}"
 
-library:
-  namespace:  relaxdiego
-  name:       library
-  import_url: https://github.com/relaxdiego/cicd-library
-
 projects:
-  - namespace:      sample
-    name:           app1
-    import_url:     https://github.com/relaxdiego/cicd-sample-k8s-app
+  - namespace:  relaxdiego
+    name:       cicd-library
+    import_url: https://github.com/relaxdiego/cicd-library
+    members:
+      - username:     "{{ vault_user_1_username }}"
+        access_level: developer
+
+  - namespace:   sample
+    name:        app1
+    import_url:  https://github.com/relaxdiego/cicd-sample-k8s-app
     # https://docs.gitlab.com/ee/api/members.html
     members:
       - username:     "{{ vault_user_1_username }}"
