@@ -158,7 +158,8 @@
   set_fact:
     desired_project_members: "{{ desired_project.members | default(project_defaults.members) }}"
 
-- include: ensure-member.yml
+- name: Ensure project member '{{ desired_member }}'
+  include_tasks: ensure-member.yml
   with_items: "{{ desired_project_members }}"
   loop_control:
     loop_var: desired_member
@@ -182,7 +183,7 @@
     declared_member_usernames: "{{ desired_project_members | map(attribute='username') | list }}"
 
 - name: Remove undeclared member
-  include: remove-undeclared-member.yml
+  include_tasks: remove-undeclared-member.yml
   with_items: "{{ project_members }}"
   loop_control:
     loop_var: project_member

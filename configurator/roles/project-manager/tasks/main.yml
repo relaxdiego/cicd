@@ -1,6 +1,7 @@
 ---
 # Define the CI/CD shared library repos
-- include: ensure-project.yml
+- name: Ensure project '{{ item }}'
+  include_tasks: ensure-project.yml
   vars:
     desired_project: "{{ item }}"
   with_items:
@@ -26,7 +27,8 @@
     merge_requests_access_level: disabled
 
 # Define user projects
-- include: ensure-project.yml
+- name: Ensure project '{{ item }}'
+  include_tasks: ensure-project.yml
   vars:
     desired_project: "{{ item }}"
   with_items: "{{ projects }}"
