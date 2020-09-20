@@ -38,27 +38,38 @@
     append: yes
     groups: docker
 
-# TODO: Make this configurable via the vars.yml file or the inventory
-- name: Set desired_runners fact
-  set_fact:
-    desired_runners:
-    - description: shell-runner
-      executor: shell
-      shell: bash
+# https://docs.gitlab.com/runner/faq/README.html#job-failed-system-failure-preparing-environment
+- name: Ensure /home/gitlab-runner/.bash_logout does not exist
+  file:
+    path: /home/gitlab-runner/.bash_logout
+    state: absent
 
-# Feels hacky
-- name: Get configured runners in host
+# TODO: Make this configurable via the vars.yml file or the inventory
+# Reference: https://docs.gitlab.com/runner/executors/
+- name: Set facts for use by this host's GitLab Runner
+  set_fact:
+    desired_runner:
+      description: "docker-executor"
+      executor: docker
+      docker_image: ubuntu:bionic
+
+- name: Get the runner in {{ ansible_hostname }}
   shell: gitlab-runner list 2>&1 | awk 'NR>2{ print $1 }'
   changed_when: false
-  register: list_configured_runners
+  register: get_current_runners
 
-- name: Set registered_runner_names and desired_runner_names facts
+- name: Set current_runners fact
   set_fact:
-    registered_runner_names: "{{ list_configured_runners.stdout_lines }}"
-    desired_runner_names: "{{ desired_runners | map(attribute='description') | list }}"
+    current_runners: "{{ get_current_runners.stdout_lines }}"
+
+- name: Unregistered undeclared runners
+  command: gitlab-runner unregister -n {{ item }}
+  when: item != desired_runner.description
+  with_items: "{{ current_runners }}"
 
 # Adapted from https://stackoverflow.com/a/57547905/402145
-- when: not desired_runner_names is subset(registered_runner_names)
+# - when: not desired_executor_names is subset(registered_executor_names)
+- when: desired_runner.description not in current_runners
   block:
   - name: Get registration token
     when: groups['gitlab_hosts'] | length > 0
@@ -72,22 +83,15 @@
     set_fact:
       registration_token: '{{ get_registration_token.stdout }}'
 
-# https://docs.gitlab.com/runner/faq/README.html#job-failed-system-failure-preparing-environment
-- name: Ensure /home/gitlab-runner/.bash_logout does not exist
-  file:
-    path: /home/gitlab-runner/.bash_logout
-    state: absent
-
-- with_items: "{{ desired_runners }}"
-  when: item.description not in registered_runner_names
-  name: Register shell runner
-  # TODO: Make this flexible enough to convert all of the keys in {{ item }}
-  #       into arguments for the `gitlab-runner register` command below.
-  command: >
-    gitlab-runner register
-      --non-interactive
-      --url "{{ gitlab_external_url }}"
-      --registration-token='{{ registration_token }}'
-      --description='{{ item.description }}'
-      --executor={{ item.executor }}
-      --shell={{ item.shell }}
+  - name: Register {{ desired_runner.description }}
+    # TODO: Make this flexible enough to convert all of the keys in {{ desired_runner }}
+    #       into arguments for the `gitlab-runner register` command below.
+    command: >-
+      gitlab-runner register
+        --non-interactive
+        --url='{{ gitlab_external_url }}'
+        --registration-token='{{ registration_token }}'
+        --description='{{ desired_runner.description }}'
+        --executor='{{ desired_runner.executor }}'
+        --docker-image='{{ desired_runner.docker_image }}'
+        --locked=false
