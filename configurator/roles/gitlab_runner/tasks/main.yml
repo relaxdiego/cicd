@@ -32,6 +32,12 @@
     deb: https://gitlab-runner-downloads.s3.amazonaws.com/v{{ gitlab_runner_version }}/deb/gitlab-runner_amd64.deb
     state: present
 
+- name: Add user gitlab-runner to docker group
+  user:
+    name: gitlab-runner
+    append: yes
+    groups: docker
+
 # TODO: Make this configurable via the vars.yml file or the inventory
 - name: Set desired_runners fact
   set_fact:

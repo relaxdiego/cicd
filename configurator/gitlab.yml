@@ -25,6 +25,12 @@
   become: true
 
   roles:
+    - role: docker
+      tags:
+        - docker
+        - runner
+        - runners
+
     - role: gitlab_runner
       tags:
         - runner
