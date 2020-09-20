@@ -49,7 +49,7 @@
 - name: Set facts for use by this host's GitLab Runner
   set_fact:
     desired_runner:
-      description: "docker-executor"
+      description: "docker-executor-with-docker-socket-binding"
       executor: docker
       docker_image: ubuntu:bionic
 
@@ -86,6 +86,9 @@
   - name: Register {{ desired_runner.description }}
     # TODO: Make this flexible enough to convert all of the keys in {{ desired_runner }}
     #       into arguments for the `gitlab-runner register` command below.
+    #
+    # TODO: Re-evaluate at a later time whether it's more secure to limit access to
+    #       docker executors with access to host's docker socket only to certain projects
     command: >-
       gitlab-runner register
         --non-interactive
@@ -95,3 +98,4 @@
         --executor='{{ desired_runner.executor }}'
         --docker-image='{{ desired_runner.docker_image }}'
         --locked=false
+        --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
