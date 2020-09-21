@@ -87,6 +87,7 @@
       -u {{ registry.username }}
       -p {{ registry.password }}
          {{ registry.address }}
+  no_log: true
   with_items: "{{ docker_registries }}"
   loop_control:
     loop_var: registry
