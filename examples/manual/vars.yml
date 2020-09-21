@@ -36,6 +36,15 @@ gitlab_extra_settings:
 
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
 
+docker_registries:
+  - address:  docker.io
+    username: "{{ vault_docker_io_username }}"
+    password: "{{ vault_docker_io_password }}"
+
+  - address:  https://my.artifactory.com:5000
+    username: "{{ vault_my_artifactory_username }}"
+    password: "{{ vault_my_artifactory_password }}"
+
 # These are users registered to GitLab's local database. It will be mutually
 # exclusive with omniauth_users and ldap_users once those are supported
 local_users:

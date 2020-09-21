@@ -78,3 +78,16 @@
     name: docker
     daemon_reload: true
     enabled: true
+
+# This is admiteddly not a very secure way of storing passwords.
+# Look into using credentials helpers such as pass or secretservice.
+- name: Log in to registries
+  command: >-
+    docker login
+      -u {{ registry.username }}
+      -p {{ registry.password }}
+         {{ registry.address }}
+  with_items: "{{ docker_registries }}"
+  loop_control:
+    loop_var: registry
+  changed_when: false

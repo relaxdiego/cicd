@@ -49,7 +49,7 @@
 - name: Set facts for use by this host's GitLab Runner
   set_fact:
     desired_runner:
-      description: "docker-executor-with-docker-socket-binding"
+      description: "containerized-executor-with-access-to-docker-daemon-via-unix-socket"
       executor: docker
       docker_image: ubuntu:bionic
 
@@ -89,6 +89,10 @@
     #
     # TODO: Re-evaluate at a later time whether it's more secure to limit access to
     #       docker executors with access to host's docker socket only to certain projects
+    #
+    # WARNING: Mounting /root/.docker/config.json onto the executor containers obviously
+    #          exposes a security hole. Look into other means of giving the docker client
+    #          in the executor container access to docker registries.
     command: >-
       gitlab-runner register
         --non-interactive
@@ -99,3 +103,4 @@
         --docker-image='{{ desired_runner.docker_image }}'
         --locked=false
         --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
+        --docker-volumes=/root/.docker/config.json:/root/.docker/config.json
