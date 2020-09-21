@@ -2,8 +2,10 @@ Example Cluster ConfigDir for Manually-Created Machines
 =======================================================
 
 Use this as a starting point for installing GitLab in a
-cluster of machines that you've provisioned manually or
-outside of this configdir's usual methods.
+cluster of machines that you've provisioned manually. It
+doesn't matter to this project where the machines are
+running (baremetal, VirtualBox, etc) as long as it can
+ssh to them.
 
 Copy this directory to another location and optionally
 turn it into its own git repo.

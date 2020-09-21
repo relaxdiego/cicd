@@ -4,7 +4,7 @@
 .tmp
 examples/vagrant-*/.vagrant
 examples/vagrant-*/*.log
-examples/vagrant-*/vars.yml
-examples/vagrant-*/vault.yml
+examples/*/vars.yml
+examples/*/vault.yml
 output
 packer_cache
