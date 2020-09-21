@@ -34,6 +34,9 @@ gitlab_extra_settings:
     - key: smtp_openssl_verify_mode
       value: peer
 
+# As per GitLab documentation, the token string must be 20 characters
+# in length to be recognized as a valid personal access token.
+# See: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html
 gitlab_root_api_token: "{{ vault_gitlab_root_api_token }}"
 
 docker_registries:
