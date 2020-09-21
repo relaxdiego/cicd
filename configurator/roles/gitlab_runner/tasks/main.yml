@@ -49,7 +49,7 @@
 - name: Set facts for use by this host's GitLab Runner
   set_fact:
     desired_runner:
-      description: "containerized-executor-with-access-to-docker-daemon-via-unix-socket"
+      description: "runner-with-docker-executors"
       executor: docker
       docker_image: ubuntu:bionic
 
@@ -104,3 +104,4 @@
         --locked=false
         --docker-volumes=/var/run/docker.sock:/var/run/docker.sock
         --docker-volumes=/root/.docker/config.json:/root/.docker/config.json
+        --request-concurrency 4
