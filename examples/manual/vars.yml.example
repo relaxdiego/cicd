@@ -65,14 +65,14 @@ local_users:
 projects:
   - namespace:  relaxdiego
     name:       cicd-library
-    import_url: https://github.com/relaxdiego/cicd-library
+    import_url: https://github.com/relaxdiego/cicd-sample-library
     members:
       - username:     "{{ vault_user_1_username }}"
         access_level: developer
 
   - namespace:   sample
     name:        base-container-image1
-    import_url: https://github.com/relaxdiego/cicd-sample-base-container-image.git
+    import_url:  https://github.com/relaxdiego/cicd-sample-base-container-image.git
     # https://docs.gitlab.com/ee/api/members.html
     members:
       - username:     "{{ vault_user_1_username }}"
