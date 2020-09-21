@@ -2,30 +2,14 @@
   <img src="https://raw.githubusercontent.com/relaxdiego/cicd/main/logo.png">
 </p>
 
-This is an experimental project that I'm using to bootstrap a CI/CD
-cluster. Currently, I'm building this project with zero automated
-testing but I expect that it will have one in the future. The ultimate
-goal is to have a self-bootstrapping CI/CD cluster. Whether that's even
-possible, I have no idea yet. I am hopeful though.
+Relaxdiego CI/CD auto-provisions and auto-configures a GitLab cluster for you.
 
 
 ## Quick Start
 
-NOTE: This part is not well documented yet since I'm still working on
-most of the logic so you'll have to read the code to get a better
-understanding of how it works.
-
-```
-make gitlab configdir=/path/to/config/dir
-```
-
-Basically, what I intend to do with the above is that you should be able
-to define your cluster's config in a separate, non-public repo which
-you can feed to this project so that it can configure your GitLab cluster.
-
-For example configdirs, see the `examples/` directory.
-
-For more Make goals, run `make help`
+Try it with the cluster configuration directory (configdir for short) at
+`examples/manual`. Read `examples/manual/README.md` for instructions on how
+to get started.
 
 
 ## Development Guide
@@ -38,12 +22,12 @@ should be able to swap out some of them (VMware Fusion) with a few
 modifications.
 
 * [Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
-* [Packer](https://www.packer.io/downloads.html)
 * [Vagrant](https://www.vagrantup.com/downloads.html)
 * [VMware Fusion](https://www.vmware.com/asean/products/fusion.html)
 * [sshpass](https://gist.github.com/relaxdiego/f2e09f72e9a54b2262c6acfcd40f7b55)
 
-#### Special Consideration for macOS
+
+#### Special Considerations for macOS
 
 Make sure you install the GNU versions of sed and grep since the BSD versions
 that come with macOS have different interfaces:
